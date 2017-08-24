@@ -23,14 +23,6 @@ typedef struct {
 typedef struct {
 
 	struct {
-		bool_t output_config; /* Dump the configuration to the log file. */
-		bool_t output_resource_limits; /* Should attempts to increase system limits trigger an error. */
-
-		// LOW: Filenames are limited to 255 characters, but file paths can be up to 4096. As such we should probably be storing this using a block of memory off the heap.
-		chr_t file[MAGMA_FILEPATH_MAX + 1]; /* Path to the magmad.config file. */
-	} config;
-
-	struct {
 		stringer_t *contact; /* The general purpose contact email address. */
 		stringer_t *abuse; /* The contact email address for abuse complaints. */
 	} admin;
@@ -44,32 +36,6 @@ typedef struct {
 		chr_t *file; /* Path to the magma.open.so library. */
 		bool_t unload; /* Unload the magma.open.so symbols at exit. */
 	} library;
-
-	struct {
-		bool_t daemonize; /* Spawn a daemon process and release the console session. */
-		char * root_directory; /* Change the root path to the provided value. */
-		char * impersonate_user; /* Change the effective user account of the process to the user provided. */
-		bool_t increase_resource_limits; /* Attempt to increase system limits. */
-		uint32_t thread_stack_size; /* How much memory should be allocated for thread stacks? */
-		uint32_t worker_threads; /* How many worker threads should we spawn? */
-		uint32_t network_buffer; /* The size of the network buffer? */
-
-		bool_t enable_core_dumps; /* Should fatal errors leave behind a core dump. */
-		uint64_t core_dump_size_limit; /* If core dumps are enabled, what size should they be limited too. */
-
-		stringer_t *domain; /* The default domain name used in new user email addresses and for unqualified login names. */
-	} system;
-
-	struct {
-		struct {
-			bool_t enable; /* Should the secure memory sub-system be enabled. */
-			uint64_t length; /* The size of the secure memory pool. The pool must fit within any memory locking limits. */
-		} memory;
-
-		stringer_t *salt; /* The string added to hash operations to improve security. */
-		stringer_t *links; /* The string used to encrypt links that reflect back to the daemon. */
-		stringer_t *sessions; /* The string used to encrypt session tokens. */
-	} secure;
 
 	struct {
 		bool_t file; /* Send log messages to a file. */
@@ -206,10 +172,6 @@ typedef struct {
 		} spf;
 
 	} iface;
-
-	// Global config section
-	chr_t * spool; /* The spool directory. */
-	int_t page_length; /* The memory page size. This value is used to align memory mapped files to page boundaries. */
 
 	// Global variables section
 	uint32_t init; /* How far into the initialization process we've gotten. */

@@ -18,7 +18,7 @@ bool_t color_supported(void) {
         !st_cmp_ci_eq(NULLER((chr_t *) term), NULLER("screen-256color")) ||
         !st_cmp_ci_eq(NULLER((chr_t *) term), NULLER("linux")) ||
         !st_cmp_ci_eq(NULLER((chr_t *) term), NULLER("cygwin"));
-    return result && !magma.system.daemonize && !magma.output.file;
+    return result && !magma_core.system.daemonize && !magma.output.file;
 }
 
 const chr_t * color_reset(void) {

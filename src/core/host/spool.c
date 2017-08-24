@@ -5,7 +5,7 @@
  * @brief	Functions for checking, creating, maintaining and using the spool.
  */
 
-#include "magma.h"
+#include "../core.h"
 
 /**
  * @note	We have to track errors locally so these functions can be used during startup and shutdown when the global statistics system may not be available.
@@ -17,6 +17,7 @@ static pthread_rwlock_t spool_creation_lock = PTHREAD_RWLOCK_INITIALIZER;
 static pthread_mutex_t spool_error_lock = PTHREAD_MUTEX_INITIALIZER,
 spool_check_lock = PTHREAD_MUTEX_INITIALIZER;
 
+static rand_get_uint64_function _rand_get_uint64 = NULL;
 
 /**
  * @brief	Get the number of spool errors encountered.
@@ -54,8 +55,8 @@ stringer_t * spool_path(int_t spool) {
 	}
 
 	// If the spool directory isn't configured, fall back to using /tmp/magma/ instead.
-	if (magma.spool) {
-		result = st_merge_opts(NULLER_T | CONTIGUOUS | HEAP, "nnn", magma.spool, (*(magma.spool + ns_length_get(magma.spool) - 1) == '/' ? "" : "/"), folder);
+	if (magma_core.spool) {
+		result = st_merge_opts(NULLER_T | CONTIGUOUS | HEAP, "nnn", magma_core.spool, (*(magma_core.spool + ns_length_get(magma_core.spool) - 1) == '/' ? "" : "/"), folder);
 	}
 	else {
 		result = st_merge_opts(NULLER_T | CONTIGUOUS | HEAP, "nn", "/tmp/magma/", folder);
@@ -121,7 +122,7 @@ int_t spool_mktemp(int_t spool, chr_t *prefix) {
 
 	// Build the a template that includes the thread id and a random number to make the resulting file path harder to predict and try creating the temporary file handle.
 	// The O_EXCL+O_CREAT flags ensure we create the file or the call fails, O_SYNC indicates synchronous IO, and O_NOATIME eliminates access time tracking.
-	if ((path = spool_path(spool)) && (template = st_aprint("%.*s%s_%lu_%lu_XXXXXX", st_length_int(path), st_char_get(path), prefix, thread_get_thread_id(), rand_get_uint64()))
+	if ((path = spool_path(spool)) && (template = st_aprint("%.*s%s_%lu_%lu_XXXXXX", st_length_int(path), st_char_get(path), prefix, thread_get_thread_id(), _rand_get_uint64()))
 		&& (fd = mkostemp(st_char_get(template), O_EXCL | O_CREAT | O_RDWR | O_SYNC | O_NOATIME)) < 0) {
 
 		// Verify that the spool directory directory tree is valid. If any of the directories are missing, this will try and create them.
@@ -130,7 +131,7 @@ int_t spool_mktemp(int_t spool, chr_t *prefix) {
 			// We need to generate a new file template since the first mkostemp may have overwritten the required X characters.
 			st_free(template);
 
-			if ((template = st_aprint("%.*s%s_%lu_%lu_XXXXXX", st_length_int(path), st_char_get(path), prefix, thread_get_thread_id(), rand_get_uint64()))
+			if ((template = st_aprint("%.*s%s_%lu_%lu_XXXXXX", st_length_int(path), st_char_get(path), prefix, thread_get_thread_id(), _rand_get_uint64()))
 				&& (fd = mkostemp(st_char_get(template), O_EXCL | O_CREAT | O_RDWR | O_SYNC | O_NOATIME)) < 0) {
 
 				// Store the errno.
@@ -327,3 +328,14 @@ bool_t spool_start(void) {
 
 	return result;
 }
+
+/**
+ * @brief	Set random number generation routine.
+ * @note	Must be set before using spool.c functionality.
+ * @return	This function returns no value.
+ */
+void spool_set_rand_provider(rand_get_uint64_function generator)
+{
+	_rand_get_uint64 = generator;
+}
+

@@ -5,7 +5,7 @@
  * @brief	The generic index interface used to abstract away the underlying data structure used for storage.
  */
 
-#include "magma.h"
+#include "../core.h"
 
 /**
  * @brief	Unlock an inx object.
@@ -322,7 +322,8 @@ inx_t * inx_alloc(uint64_t options, void *data_free) {
 
 	switch (options & MAGMA_INDEX_TYPE) {
 	case M_INX_TREE:
-		inx = tree_alloc(options, data_free);
+		//TODO: add index types extension mechanism
+		//inx = tree_alloc(options, data_free);
 		break;
 	case M_INX_LINKED:
 		inx = linked_alloc(options, data_free);

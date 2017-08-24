@@ -5,8 +5,7 @@
  * @brief	Functions used for string replacement.
  */
 
-#include "magma.h"
-
+#include "../core.h"
 /*
  * @brief	Replace all instances of a substring inside another string.
  * @param	target			a pointer to the address of a managed string containing the haystack string, which will be overwritten with the

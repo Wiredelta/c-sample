@@ -1,11 +1,11 @@
 
 /**
- * @file /magma/engine/status/status.c
+ * @file /magma/core/status/status.c
  *
  * @brief	Functions used to coordinate system state and worker thread operation and shutdown..
  */
 
-#include "magma.h"
+#include "../core.h"
 
 struct {
 	pid_t pid;

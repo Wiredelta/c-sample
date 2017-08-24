@@ -5,8 +5,8 @@
  * @brief	Functions involved in initializing, manipulating and verifying the operating context for the system.
  */
 
-#ifndef MAGMA_ENGINE_CONTEXT_H
-#define MAGMA_ENGINE_CONTEXT_H
+#ifndef MAGMA_CORE_CONTEXT_H
+#define MAGMA_CORE_CONTEXT_H
 
 /// args.c
 void	display_usage(void);

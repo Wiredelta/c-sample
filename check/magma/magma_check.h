@@ -38,6 +38,7 @@
 #include "servers/camel/camel_check.h"
 #include "regression/regression_check.h"
 #include "config/config_check.h"
+#include "color.h"
 
 extern int case_timeout;
 

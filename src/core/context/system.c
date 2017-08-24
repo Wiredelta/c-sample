@@ -5,7 +5,7 @@
  * @brief	Functions used to interface with and configure the operating system.
  */
 
-#include "magma.h"
+#include "../core.h"
 
 /**
  * @brief	Get the hard system limit for a specified resource.
@@ -60,13 +60,13 @@ uint64_t system_ulimit_cur(int_t resource) {
 }
 
 /**
- * @brief	Perform a chroot() on the directory specified in the config option magma.system.root_directory, if it is set.
+ * @brief	Perform a chroot() on the directory specified in the config option magma_core.system.root_directory, if it is set.
  * @return	true on success or false on failure.
  */
 bool_t system_change_root_directory(void) {
 
-	if (magma.system.root_directory && chroot(magma.system.root_directory)) {
-		log_info("Could not jail the process inside %s. { root = %s }", magma.system.root_directory,
+	if (magma_core.system.root_directory && chroot(magma_core.system.root_directory)) {
+		log_info("Could not jail the process inside %s. { root = %s }", magma_core.system.root_directory,
 				strerror_r(errno, bufptr, buflen));
 		return false;
 	}
@@ -75,7 +75,7 @@ bool_t system_change_root_directory(void) {
 }
 
 /**
- * @brief	Daemonize into the background, if the magma.system.daemonize config option is set.
+ * @brief	Daemonize into the background, if the magma_core.system.daemonize config option is set.
  * @return	true inside the child process, or false inside the parent process or if an error occurs.
  */
 bool_t system_fork_daemon(void) {
@@ -83,7 +83,7 @@ bool_t system_fork_daemon(void) {
 	pid_t pid;
 
 	// If requested, fork into different processes and release the console session.
-	if (magma.system.daemonize) {
+	if (magma_core.system.daemonize) {
 
 		if ((pid = fork()) == -1) {
 			log_info("Could not fork a background daemon process.");
@@ -143,17 +143,17 @@ bool_t system_init_umask(void) {
 }
 
 /**
- * @brief	Set the magma core dump size rlimit, if magma.system.enable_core_dumps was enabled.
+ * @brief	Set the magma core dump size rlimit, if magma_core.system.enable_core_dumps was enabled.
  * @return	true if core dumps were successfully enabled or false on failure.
  */
 bool_t system_init_core_dumps(void) {
 
 	struct rlimit64 limits = {
-		.rlim_cur = magma.system.core_dump_size_limit,
-		.rlim_max = magma.system.core_dump_size_limit
+		.rlim_cur = magma_core.system.core_dump_size_limit,
+		.rlim_max = magma_core.system.core_dump_size_limit
 	};
 
-	if (magma.system.enable_core_dumps && setrlimit64(RLIMIT_CORE, &limits)) {
+	if (magma_core.system.enable_core_dumps && setrlimit64(RLIMIT_CORE, &limits)) {
 		log_info("The system does not allow core dumps. { error = %s}", strerror_r(errno, bufptr, buflen));
 		return false;
 	}
@@ -162,9 +162,9 @@ bool_t system_init_core_dumps(void) {
 }
 
 /**
- * @brief	Set process privileges to run as a specified user if magma.system.impersonate_user is set.
+ * @brief	Set process privileges to run as a specified user if magma_core.system.impersonate_user is set.
  * @note	This function will set the user id and group id to the specified user, and chdir() to their home directory.
- * @return	true on success or if magma.system.impersonate_user is not set; false on failure to change privileges.
+ * @return	true on success or if magma_core.system.impersonate_user is not set; false on failure to change privileges.
  */
 bool_t system_init_impersonation(void) {
 
@@ -173,7 +173,7 @@ bool_t system_init_impersonation(void) {
 	size_t pwnam_len;
 	struct passwd user, *result;
 
-	if (magma.system.impersonate_user) {
+	if (magma_core.system.impersonate_user) {
 
 		mm_wipe(&user, sizeof(struct passwd));
 
@@ -185,12 +185,12 @@ bool_t system_init_impersonation(void) {
 			return false;
 		}
 		// Pull the user information.
-		else if ((err = getpwnam_r(magma.system.impersonate_user, &user, pwnam, pwnam_len, &result)) || !result) {
+		else if ((err = getpwnam_r(magma_core.system.impersonate_user, &user, pwnam, pwnam_len, &result)) || !result) {
 
 			if (!result) {
-				log_info("The user account %s does not exist.", magma.system.impersonate_user);
+				log_info("The user account %s does not exist.", magma_core.system.impersonate_user);
 			} else {
-				log_info("Unable to retrieve information for the user account %s. { error = %s }", magma.system.impersonate_user,
+				log_info("Unable to retrieve information for the user account %s. { error = %s }", magma_core.system.impersonate_user,
 					strerror_r(errno, bufptr, buflen));
 			}
 
@@ -199,7 +199,7 @@ bool_t system_init_impersonation(void) {
 		}
 		// Change into the user's home directory.
 		else if (chdir(user.pw_dir)) {
-			log_info("Unable to change into the %s directory which is the home for the user %s. { error = %s }", user.pw_dir, magma.system.impersonate_user,
+			log_info("Unable to change into the %s directory which is the home for the user %s. { error = %s }", user.pw_dir, magma_core.system.impersonate_user,
 				strerror_r(errno, bufptr, buflen));
 			mm_free(pwnam);
 			return false;
@@ -213,7 +213,7 @@ bool_t system_init_impersonation(void) {
 		}
 		// Begin impersonating the user.
 		else if (getuid() != user.pw_uid && setuid(user.pw_uid)) {
-			log_info("Unable to begin impersonating the user %s. { error = %s }", magma.system.impersonate_user,
+			log_info("Unable to begin impersonating the user %s. { error = %s }", magma_core.system.impersonate_user,
 				strerror_r(errno, bufptr, buflen));
 			mm_free(pwnam);
 			return false;
@@ -235,7 +235,7 @@ bool_t system_init_impersonation(void) {
 }
 
 /**
- * @brief	Increase process resource limits, if magma.system.increase_resource_limits is set.
+ * @brief	Increase process resource limits, if magma_core.system.increase_resource_limits is set.
  * @note	Resource limits will be maximized for magma's virtual address space, data and stack segments, available file descriptors and
  * 			sub-processes, and allowed file sizes.
  * 			If output_resource_limits is enabled, the state of the process resource limits will be dumped to the log afterwards.
@@ -249,48 +249,48 @@ bool_t system_init_resource_limits(void) {
 	};
 	chr_t *errbuf = MEMORYBUF(1024);
 
-	if (magma.system.increase_resource_limits) {
+	if (magma_core.system.increase_resource_limits) {
 
 		// Address Space
-		if (setrlimit64(RLIMIT_AS, &limits) && magma.config.output_resource_limits) {
+		if (setrlimit64(RLIMIT_AS, &limits) && magma_core.config.output_resource_limits) {
 			log_info("Unable to increase the address space limit. { error = %s }", strerror_r(errno, errbuf, 1024));
 		}
 
 		// Data Segment
-		if (setrlimit64(RLIMIT_DATA, &limits) && magma.config.output_resource_limits) {
+		if (setrlimit64(RLIMIT_DATA, &limits) && magma_core.config.output_resource_limits) {
 			log_info("Unable to increase the data segment limit. { error = %s }", strerror_r(errno, errbuf, 1024));
 		}
 
 		// Stack Size
-		if (setrlimit64(RLIMIT_STACK, &limits) && magma.config.output_resource_limits) {
+		if (setrlimit64(RLIMIT_STACK, &limits) && magma_core.config.output_resource_limits) {
 			log_info("Unable to increase the stack size limit. { error = %s }", strerror_r(errno, errbuf, 1024));
 		}
 
 		// File Size
-		if (setrlimit64(RLIMIT_FSIZE, &limits) && magma.config.output_resource_limits) {
+		if (setrlimit64(RLIMIT_FSIZE, &limits) && magma_core.config.output_resource_limits) {
 			log_info("Unable to increase the file size limit. { error = %s }", strerror_r(errno, errbuf, 1024));
 		}
 
 		// Number of Threads/Processes
-		if (setrlimit64(RLIMIT_NPROC, &limits) && magma.config.output_resource_limits) {
+		if (setrlimit64(RLIMIT_NPROC, &limits) && magma_core.config.output_resource_limits) {
 			log_info("Unable to increase the thread limit. { error = %s }", strerror_r(errno, errbuf, 1024));
 		}
 
 		// Locked Memory
-		if (setrlimit64(RLIMIT_MEMLOCK, &limits) && magma.config.output_resource_limits) {
+		if (setrlimit64(RLIMIT_MEMLOCK, &limits) && magma_core.config.output_resource_limits) {
 			log_info("Unable to increase the locked memory limit. { error = %s }", strerror_r(errno, errbuf, 1024));
 		}
 
 		// File Descriptors
 		limits.rlim_cur = limits.rlim_max = 1048576;
 
-		if (setrlimit64(RLIMIT_NOFILE, &limits) && magma.config.output_resource_limits) {
+		if (setrlimit64(RLIMIT_NOFILE, &limits) && magma_core.config.output_resource_limits) {
 			log_info("Unable to increase the file descriptor limit. { error = %s }", strerror_r(errno, errbuf, 1024));
 		}
 
 	}
 
-	if (magma.config.output_resource_limits) {
+	if (magma_core.config.output_resource_limits) {
 
 		log_info("---------------------------- RESOURCES LIMITS ----------------------------");
 

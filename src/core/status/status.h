@@ -1,12 +1,12 @@
 
 /**
- * @file /magma/engine/status/status.h
+ * @file /magma/core/status/status.h
  *
  * @brief	Functions involved with tracking system status and performance.
  */
 
-#ifndef MAGMA_ENGINE_STATUS_H
-#define MAGMA_ENGINE_STATUS_H
+#ifndef MAGMA_CORE_STATUS_H
+#define MAGMA_CORE_STATUS_H
 
 /************  BUILD  ************/
 const char * build_stamp(void);

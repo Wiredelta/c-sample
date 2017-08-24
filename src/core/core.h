@@ -8,6 +8,7 @@
 #ifndef MAGMA_CORE_H
 #define MAGMA_CORE_H
 
+//#include <gnu/libc-version.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,12 +27,38 @@
 #include <limits.h>
 #include <ftw.h>
 #include <time.h>
+#include <pwd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/stat.h>
+#include <sys/prctl.h>
 #include <sys/mman.h>
 #include <sys/utsname.h>
 #include <sys/resource.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+// RFC 2181 specifies a maximum legal length of 253 characters for a dotted domain name. Individual levels of the overall name
+// may contain a maximum of 63 characters.
+#define MAGMA_HOSTNAME_MAX _POSIX_HOST_NAME_MAX
+
+// The maximum number of characters in a file path... currently 4096.
+#define MAGMA_FILEPATH_MAX PATH_MAX
+
+// The maximum number of characters in a file name... currently 255.
+#define MAGMA_FILENAME_MAX NAME_MAX
+
+// The amount of memory allocated by default to hold the stack for spawned threads.
+#define MAGMA_THREAD_STACK_SIZE 1048576
+
+// The size of the thread local buffer.
+#define MAGMA_THREAD_BUFFER_SIZE 1024
+
+// The maximum number of worker threads allowed, even if the system limit is higher.
+#define MAGMA_WORKER_THREAD_LIMIT 16384
+
+// The amount of data used to seed the random number generator.
+#define MAGMA_CRYPTOGRAPHY_SEED_SIZE 256
 
 /**
  * The type definitions used by Magma that are not defined by the system headers.
@@ -173,13 +200,61 @@ char * type(M_TYPE type);
 #include "strings/strings.h"
 #include "classify/classify.h"
 #include "encodings/encodings.h"
-#include "indexes/indexes.h"
-#include "compare/compare.h"
 #include "thread/thread.h"
 #include "buckets/buckets.h"
-#include "parsers/parsers.h"
 #include "checksum/checksum.h"
 #include "host/host.h"
+#include "status/status.h"
+#include "context/context.h"
+#include "indexes/indexes.h"
+#include "parsers/parsers.h"
+#include "compare/compare.h"
+#include "parsers/parsers.h"
+
+typedef struct {
+
+	struct {
+		bool_t output_config; /* Dump the configuration to the log file. */
+		bool_t output_resource_limits; /* Should attempts to increase system limits trigger an error. */
+
+		// LOW: Filenames are limited to 255 characters, but file paths can be up to 4096. As such we should probably be storing this using a block of memory off the heap.
+		chr_t file[MAGMA_FILEPATH_MAX + 1]; /* Path to the magmad.config file. */
+	} config;
+
+	struct {
+		struct {
+			bool_t enable; /* Should the secure memory sub-system be enabled. */
+			uint64_t length; /* The size of the secure memory pool. The pool must fit within any memory locking limits. */
+		} memory;
+
+		stringer_t *salt; /* The string added to hash operations to improve security. */
+		stringer_t *links; /* The string used to encrypt links that reflect back to the daemon. */
+		stringer_t *sessions; /* The string used to encrypt session tokens. */
+	} secure;
+
+	struct {
+		bool_t daemonize; /* Spawn a daemon process and release the console session. */
+		char * root_directory; /* Change the root path to the provided value. */
+		char * impersonate_user; /* Change the effective user account of the process to the user provided. */
+		bool_t increase_resource_limits; /* Attempt to increase system limits. */
+		uint32_t thread_stack_size; /* How much memory should be allocated for thread stacks? */
+		uint32_t worker_threads; /* How many worker threads should we spawn? */
+		uint32_t network_buffer; /* The size of the network buffer? */
+
+		bool_t enable_core_dumps; /* Should fatal errors leave behind a core dump. */
+		uint64_t core_dump_size_limit; /* If core dumps are enabled, what size should they be limited too. */
+
+		stringer_t *domain; /* The default domain name used in new user email addresses and for unqualified login names. */
+	} system;
+
+	chr_t * spool; /* The spool directory. */
+	int_t page_length; /* The memory page size. This value is used to align memory mapped files to page boundaries. */
+} magma_core_t;
+extern magma_core_t magma_core;
+
+extern __thread char threadBuffer[1024];
+#define bufptr (char *)&(threadBuffer)
+#define buflen sizeof(threadBuffer)
 
 #endif
 

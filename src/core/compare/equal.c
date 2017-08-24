@@ -5,9 +5,7 @@
  * @brief	Functions to check for string equality.
  */
 
-#include "magma.h"
-
-#include "../../../lib/sources/dkim/opendkim/opendkim-ar.h"
+#include "../core.h"
 
 /**
  * @brief	Perform a case-sensitive comparison of two memory blocks.

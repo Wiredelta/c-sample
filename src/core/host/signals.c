@@ -5,7 +5,7 @@
  * @brief 	Functions to help handle signals.
  */
 
-#include "magma.h"
+#include "../core.h"
 
 /**
  * @brief	Translate a numeric signal into a human readable name.

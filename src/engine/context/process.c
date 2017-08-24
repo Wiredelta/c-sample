@@ -161,6 +161,7 @@ void process_stop(void) {
  */
 bool_t process_start(void) {
 
+	spool_set_rand_provider(rand_get_uint64);
 	bool_t (*starters[])() = {
 		(void *)&sanity_check,
 		NULL,
@@ -310,7 +311,7 @@ bool_t process_start(void) {
 		return false;
 	}
 	// Store the page length so we can properly align our memory requests.
-	else if ((magma.page_length = getpagesize()) <= 0) {
+	else if ((magma_core.page_length = getpagesize()) <= 0) {
 		log_critical("The memory page alignment size is invalid.");
 		return false;
 	}
