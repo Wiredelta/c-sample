@@ -34,7 +34,7 @@ MAGMA_CORE_LSTATIC				=
 MAGMA_CORE_LDYNAMIC				= -lrt -ldl -lpthread -lresolv
 
 FILTERED_CORE_SRCFILES			= 
-MAGMA_CORE_SRCDIRS				= $(subst ./,,$(shell find . -type d -print))
+MAGMA_CORE_SRCDIRS				= $(subst ./,,$(shell find ./src/core -type d -print))
 MAGMA_CORE_SRCFILES				= $(filter-out $(FILTERED_CORE_SRCFILES), $(foreach dir, $(MAGMA_CORE_SRCDIRS), $(wildcard $(dir)/*.c)))
 
 MAGMA_CORE_CINCLUDES			= #-I$(TOPDIR)
