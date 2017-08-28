@@ -4,18 +4,13 @@
 #
 #########################################################################
 
-TOPDIR							= $(realpath .)
-MFLAGS							=
-#MAKEFLAGS						= --output-sync=target --jobs=6
-MAKEFLAGS						= --output-sync=target
+include common.mk
 
 # Identity of this package.
 PACKAGE_NAME					= Magma Daemon
 PACKAGE_TARNAME					= magma
 PACKAGE_VERSION					= 6.4
 PACKAGE_STRING					= $(PACKAGE_NAME) $(PACKAGE_VERSION)
-PACKAGE_BUGREPORT				= support@lavabit.com
-PACKAGE_URL						= https://lavabit.com
 
 MAGMA_PROGRAM					= $(addsuffix $(EXEEXT), magmad)
 MAGMA_CHECK_PROGRAM				= $(addsuffix $(EXEEXT), magmad.check)
@@ -31,9 +26,6 @@ DIME_PROGRAM					= $(addsuffix $(EXEEXT), dime)
 SIGNET_PROGRAM					= $(addsuffix $(EXEEXT), signet)
 GENREC_PROGRAM					= $(addsuffix $(EXEEXT), genrec)
 DIME_CHECK_PROGRAM				= $(addsuffix $(EXEEXT), dime.check)
-
-# Source Files
-BUILD_SRCFILES					= src/engine/status/build.c
 
 MAGMA_STATIC					= 
 MAGMA_DYNAMIC					= -lrt -ldl -lpthread -lresolv
@@ -87,7 +79,6 @@ DIME_CHECK_CINCLUDES			= $(MAGMA_CINCLUDES)
 MAGMA_CHECK_CINCLUDES			= -Icheck/magma -Ilib/local/include/ $(MAGMA_CINCLUDES) $(addprefix -I,$(MAGMA_CHECK_INCLUDE_ABSPATHS))
 DIME_CHECK_CPPINCLUDES			= -Icheck/dime -Ilib/sources/googtest/include/ -Ilib/sources/googtest/ -Ilib/sources/googtap/src/ $(MAGMA_CINCLUDES)
 
-CDEFINES						= -D_REENTRANT -D_GNU_SOURCE -D_LARGEFILE64_SOURCE -DHAVE_NS_TYPE -DFORTIFY_SOURCE=2 -DMAGMA_PEDANTIC 
 CDEFINES.build.c 				= -DMAGMA_VERSION=\"$(MAGMA_VERSION)\" -DMAGMA_COMMIT=\"$(MAGMA_COMMIT)\" -DMAGMA_TIMESTAMP=\"$(MAGMA_TIMESTAMP)\"
 
 CPPDEFINES						= $(CDEFINES) -DGTEST_TAP_PRINT_TO_STDOUT -DGTEST_HAS_PTHREAD=1
@@ -95,7 +86,6 @@ CPPDEFINES						= $(CDEFINES) -DGTEST_TAP_PRINT_TO_STDOUT -DGTEST_HAS_PTHREAD=1
 
 
 # Hidden Directory for Dependency Files
-DEPDIR							= .deps
 DIME_DEPFILES					= $(patsubst %.c,$(DEPDIR)/%.d,$(DIME_SRCFILES))
 MAGMA_DEPFILES					= $(patsubst %.c,$(DEPDIR)/%.d,$(MAGMA_SRCFILES))
 SIGNET_DEPFILES					= $(patsubst %.c,$(DEPDIR)/%.d,$(SIGNET_SRCFILES))
@@ -106,7 +96,6 @@ DIME_CHECK_DEPFILES				+= $(patsubst %.cc,$(DEPDIR)/%.d,$(DIME_CHECK_CCFILES))
 DIME_CHECK_DEPFILES				+= $(patsubst %.cpp,$(DEPDIR)/%.d,$(DIME_CHECK_CPPFILES))
 
 # Hidden Directory for Object Files
-OBJDIR							= .objs
 MAGMA_OBJFILES					= $(patsubst %.c,$(OBJDIR)/%.o,$(MAGMA_SRCFILES))
 MAGMA_CHECK_OBJFILES			= $(patsubst %.c,$(OBJDIR)/%.o,$(MAGMA_CHECK_SRCFILES))
 
@@ -131,52 +120,7 @@ MAGMA_CHECK_INCLUDE_ABSPATHS	+= $(foreach target,$(MAGMA_CHECK_INCDIRS), $(call 
 # Magma Incremental Builds
 # MAGMA_INCREMENTAL_BUILD		= $(patsubst %.c, $(OBJDIR)/%.o, $(shell find src/ tools/ check/ -type f -mtime -1 -print))
 
-# Compiler Parameters
-CC								= gcc
-CFLAGS							= -std=gnu99 -O0 -fPIC -fmessage-length=0 -ggdb3 -rdynamic -c $(CFLAGS_WARNINGS) -MMD 
-CFLAGS_WARNINGS					= -Wall -Werror -Winline -Wformat-security -Warray-bounds #-Wfatal-errors
-CFLAGS_PEDANTIC					= -Wextra -Wpacked -Wunreachable-code -Wformat=2
-
-CPP								= g++
-CPPFLAGS						= -std=c++0x $(CPPFLAGS_WARNINGS) -Wno-unused-parameter -pthread -g3 
-CPPFLAGS_WARNINGS				= -Werror -Wall -Wextra -Wformat=2 -Wwrite-strings -Wno-format-nonliteral #-Wfatal-errors
-
-# Linker Parameters
-LD								= gcc
 LDFLAGS							= -rdynamic
-
-# Archiver Parameters
-AR								= ar
-ARFLAGS							= rcs
-
-# Strip Parameters
-STRIP							= strip
-STRIPFLAGS						= --strip-debug
-
-# GProf Parameters
-GPROF							= -pg -finstrument-functions -fprofile-arcs -ftest-coverage
-
-# PProf Parameters
-PPROF							= -lprofiler
-
-# Other External programs
-MV								= mv --force
-RM								= rm --force
-RMDIR							= rmdir --parents --ignore-fail-on-non-empty
-MKDIR							= mkdir --parents
-RANLIB							= ranlib
-INSTALL							= install
-
-# Text Coloring
-RED								= $$(tput setaf 1)
-BLUE							= $$(tput setaf 4)
-GREEN							= $$(tput setaf 2)
-WHITE							= $$(tput setaf 7)
-YELLOW							= $$(tput setaf 3)
-
-# Text Weighting
-BOLD							= $$(tput bold)
-NORMAL							= $$(tput sgr0)
 
 # Calculate the version, commit and timestamp strings.
 MAGMA_REPO						= $(shell which git &> /dev/null && git log &> /dev/null && echo 1) 
@@ -191,13 +135,6 @@ endif
 
 MAGMA_TIMESTAMP					= $(shell date +'%Y%m%d.%H%M')
 
-ifeq ($(VERBOSE),yes)
-RUN								=
-else
-RUN								= @
-VERBOSE							= no
-endif
-
 # So we can tell the user what happened
 ifdef MAKECMDGOALS
 TARGETGOAL						+= $(MAKECMDGOALS)
@@ -206,12 +143,6 @@ TARGETGOAL						= $(.DEFAULT_GOAL)
 endif
 
 ifeq ($(OS),Windows_NT)
-    HOSTTYPE 					:= "Windows"
-    LIBPREFIX					:= 
-    DYNLIBEXT					:= ".dll"
-    STATLIBEXT					:= ".lib"
-    EXEEXT 						:= ".exe"
-    
     # Alias the target names on Windows to the equivalent without the exe extension.
 	$(basename $(DIME_PROGRAM)) := $(DIME_PROGRAM)
 	$(basename $(MAGMA_PROGRAM)) := $(MAGMA_PROGRAM)
@@ -220,24 +151,12 @@ ifeq ($(OS),Windows_NT)
 	$(basename $(DIME_CHECK_PROGRAM)) := $(DIME_CHECK_PROGRAM)
 	$(basename $(MAGMA_CHECK_PROGRAM)) := $(MAGMA_CHECK_PROGRAM)
 else
-    HOSTTYPE					:= $(shell uname -s)
-    LIBPREFIX					:= lib
-    DYNLIBEXT					:= .so
-    STATLIBEXT					:= .a
-    EXEEXT						:= 
+
 endif
 
 all: config warning $(MAGMA_PROGRAM) $(DIME_PROGRAM) $(SIGNET_PROGRAM) $(GENREC_PROGRAM) $(MAGMA_CHECK_PROGRAM) $(DIME_CHECK_PROGRAM) finished 
 
 strip: config warning stripped-$(MAGMA_PROGRAM) stripped-$(MAGMA_SHARED_LIBRARY) finished
-	
-warning:
-ifeq ($(VERBOSE),no)
-	@echo 
-	@echo 'For a more verbose output' 
-	@echo '  make '$(GREEN)'VERBOSE=yes' $(NORMAL)$(TARGETGOAL)
-	@echo 
-endif
 
 config:
 	@echo 
@@ -266,12 +185,6 @@ gprof: $(MAGMA_PROGRAM_GPROF) $(MAGMA_CHECK_PROGRAM_GPROF)
 
 pprof: $(MAGMA_PROGRAM_PPROF) $(MAGMA_CHECK_PROGRAM_PPROF)
   
-# If verbose mode is disabled, we only output this finished message.
-finished:
-ifeq ($(VERBOSE),no)
-	@echo 'Finished' $(BOLD)$(GREEN)$(TARGETGOAL)$(NORMAL)
-endif
-
 #incremental: $(MAGMA_INCREMENTAL_BUILD)
 
 # Delete the compiled program along with the generated object and dependency files
@@ -447,6 +360,7 @@ endif
 # If we've already generated dependency files, use them to see if a rebuild is required
 -include $(MAGMA_DEPFILES) $(DIME_DEPFILES) $(SIGNET_DEPFILES) $(GENREC_DEPFILES) $(MAGMA_CHECK_DEPFILES) $(DIME_CHECK_DEPFILES)
 
+.DEFAULT_GOAL := all
 # Special Make Directives
 .SUFFIXES: .c .cc .cpp .o 
 #.NOTPARALLEL: warning conifg $(PACKAGE_DEPENDENCIES)
