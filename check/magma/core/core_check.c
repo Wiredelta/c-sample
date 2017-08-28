@@ -5,7 +5,13 @@
  * @brief The heart of the suite of unit tests for the Magma core module.
  */
 
-#include "magma_check.h"
+include "core_check.h"
+
+// Normally the START_TEST macro creates a static testcase function. Unfortunately we can't
+// find those symbols using dlsym() so we can't dynamically select individual test cases at
+// runtime. This redefines the macro without using the static keyword to workaround this problem.
+#undef START_TEST
+#define START_TEST(__testname) void __testname (int _i CK_ATTRIBUTE_UNUSED) {  tcase_fn_start (""# __testname, __FILE__, __LINE__);
 
 START_TEST(check_bsearch) {
 
