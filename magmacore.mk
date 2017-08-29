@@ -46,31 +46,23 @@ CDEFINES						= -D_REENTRANT -D_GNU_SOURCE -D_LARGEFILE64_SOURCE -DHAVE_NS_TYPE 
 
 #MAGMA_CORE_CHECK_STATIC		= $(MAGMA_CORE_STATIC) $(TOPDIR)/lib/local/lib/libcheck.a
 MAGMA_CORE_CHECK_STATIC		=
-MAGMA_CORE_CHECK_DYNAMIC			= $(MAGMA_CORE_LDYNAMIC) -L$(TOPDIR)/magmacore
-MAGMA_CORE_CHECK_SRCDIRS			= $(shell find check/magma/core -type d -print)
-MAGMA_CORE_CHECK_SRCFILES		= $(foreach dir, $(MAGMA_CHECK_SRCDIRS), $(wildcard $(dir)/*.c))
+MAGMA_CORE_CHECK_DYNAMIC		= $(MAGMA_CORE_LDYNAMIC) -L$(TOPDIR)/magmacore
+MAGMA_CORE_CHECK_SRCDIRS		= $(shell find check/magma/core -type d -print)
+MAGMA_CORE_CHECK_SRCFILES		= $(foreach dir, $(MAGMA_CORE_CHECK_SRCDIRS), $(wildcard $(dir)/*.c))
 
 MAGMA_CORE_CINCLUDES				= -Isrc -Isrc/providers -I$(INCDIR) $(addprefix -I,$(MAGMA_CORE_INCLUDE_ABSPATHS))
 MAGMA_CORE_CHECK_CINCLUDES		= -Icheck/magma -Ilib/local/include/ $(MAGMA_CINCLUDES) $(addprefix -I,$(MAGMA_CHECK_INCLUDE_ABSPATHS))
 MAGMA_CORE_CHECK_DEPFILES			= $(patsubst %.c,$(DEPDIR)/%.d,$(MAGMA_CORE_CHECK_SRCFILES))
 MAGMA_CORE_CHECK_OBJFILES		= $(patsubst %.c,$(OBJDIR)/%.o,$(MAGMA_CORE_CHECK_SRCFILES))
-MAGMA_CHECK_INCLUDE_ABSPATHS	+= $(foreach target,$(MAGMA_CHECK_INCDIRS), $(call INCLUDE_DIR_SEARCH,$(target)))
+MAGMA_CHECK_INCLUDE_ABSPATHS	+= $(foreach target,$(MAGMA_CORE_CHECK_INCDIRS), $(call INCLUDE_DIR_SEARCH,$(target)))
 
 #PACKAGE_DEPENDENCIES			= $(MAGMA_CORE_SHARED) $(MAGMA_CORE_STATIC) $(filter-out $(MAGMA_CORE_STATIC), $(MAGMA_CORE_CHECK_STATIC))
 
 check: config warning $(MAGMA_CORE_CHECK_PROGRAM) finished
-	$(RUN)$(TOPDIR)/$(MAGMA_CORE_CHECK_PROGRAM) sandbox/etc/magma.sandbox.config
+	$(RUN)$(TOPDIR)/$(MAGMA_CORE_CHECK_PROGRAM) sandbox/etc/magma.sandbox.config > loggggg.txt
 
-# Magma Core Unit Test Files
-ifeq ($(VERBOSE),no)
-	@echo 'Unit Test Building' $(YELLOW)$<$(NORMAL)
-endif
-	@test -d $(DEPDIR)/$(dir $<) || $(MKDIR) $(DEPDIR)/$(dir $<)
-	@test -d $(OBJDIR)/$(dir $<) || $(MKDIR) $(OBJDIR)/$(dir $<)
-	$(RUN)$(CC) -o '$@' $(CFLAGS) $(CDEFINES) $(CFLAGS.$(<F)) $(CDEFINES.$(<F)) $(MAGMA_CORE_CHECK_CINCLUDES) -MF"$(<:%.c=$(DEPDIR)/%.d)" -MT"$@" "$<"
-
-# The Magma Unit Test Object Files
-$(OBJDIR)/check/magma/%.o: check/magma/%.c
+# The Magma Core Unit Test Object Files
+$(OBJDIR)/check/magma/core/%.o: check/magma/core/%.c
 ifeq ($(VERBOSE),no)
 	@echo 'Building' $(YELLOW)$<$(NORMAL)
 endif

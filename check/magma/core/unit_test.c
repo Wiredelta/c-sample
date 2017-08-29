@@ -219,6 +219,10 @@ int main(int argc, char *argv[]) {
 	int_t failed = 0, result;
 	pthread_t *net_listen_thread = NULL;
 	time_t prog_start, test_start, test_end;
+	
+	log_enable();
+	
+	log_unit("----------------------------- Started -----------------------------\n");
 
 	if (process_kill(PLACER("magmad", 6), SIGTERM, 10) < 0 || process_kill(PLACER("magmad.check", 12), SIGTERM, 10) < 0 || process_kill("magmacore.check", 15)) {
 		log_error("Another instance of the Magma Daemon is already running and refuses to die.");
@@ -299,11 +303,15 @@ int main(int argc, char *argv[]) {
 	// Cleanup and free the resources allocated by the check code.
 	status_set(-1);
 	srunner_free(sr);
+	
+	log_unit("----------------------------- Finished -----------------------------\n");
 
 	// Cleanup the background listening thread.
 	thread_cancel(*net_listen_thread);
 	thread_join(*net_listen_thread);
 	mm_free(net_listen_thread);
+	
+	log_disable();
 
 	// Cleanup and free the resources allocated by the magma code.
 	process_stop();

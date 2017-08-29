@@ -5,7 +5,8 @@
  * @brief Base64 encoder unit tests.
  */
 
-#include "magma_check.h"
+//#include "magma_check.h"
+#include "core/core_check.h" 
 
 bool_t check_encoding_base64(bool_t secure_on) {
 
