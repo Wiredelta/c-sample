@@ -30,16 +30,16 @@ int_t thread_launch(pthread_t *thread, void *function, void *data) {
 	pthread_attr_t attributes;
 
 	if ((result = pthread_attr_init(&attributes))) {
-		log_pedantic("Could not initialize the thread attribute structure. {pthread_attr_init = %i}", result);
+		mclog_pedantic("Could not initialize the thread attribute structure. {pthread_attr_init = %i}", result);
 		return result;
 	}
 	else if ((result = pthread_attr_setstacksize(&attributes, magma_core.system.thread_stack_size))) {
-		log_pedantic("Could not set the stack size correctly. {pthread_attr_setstacksize = %i}", result);
+		mclog_pedantic("Could not set the stack size correctly. {pthread_attr_setstacksize = %i}", result);
 		pthread_attr_destroy(&attributes);
 		return result;
 	}
 	else if ((result = pthread_create(thread, &attributes, function, data))) {
-		log_pedantic("Could not initialize a new thread. {pthread_create = %i}", result);
+		mclog_pedantic("Could not initialize a new thread. {pthread_create = %i}", result);
 		pthread_attr_destroy(&attributes);
 		return result;
 	}
@@ -61,11 +61,11 @@ pthread_t * thread_alloc(void *function, void *data) {
 	pthread_t *result;
 
 	if (!(result = mm_alloc(sizeof(pthread_t)))) {
-		log_pedantic("Could not allocate %zu bytes to hold the pthread_t structure.", sizeof(pthread_t));
+		mclog_pedantic("Could not allocate %zu bytes to hold the pthread_t structure.", sizeof(pthread_t));
 		return NULL;
 	}
 	else if ((ret = thread_launch(result, function, data))) {
-		log_pedantic("An error occurred while attempting to spawn the thread. {thread_init = %i}", ret);
+		mclog_pedantic("An error occurred while attempting to spawn the thread. {thread_init = %i}", ret);
 		mm_free(result);
 		return NULL;
 	}
@@ -84,7 +84,7 @@ int_t thread_join(pthread_t thread) {
 	int_t ret = pthread_join(thread, NULL);
 
 	if (ret) {
-		log_pedantic("Could not join to the requested thread. { pthread_join = %i }", ret);
+		mclog_pedantic("Could not join to the requested thread. { pthread_join = %i }", ret);
 	}
 
 	return ret;
@@ -102,7 +102,7 @@ int_t thread_result(pthread_t thread, void **result) {
 	int_t ret = pthread_join(thread, result);
 
 	if (ret) {
-		log_pedantic("Could not join to the requested thread. { pthread_join = %i }", ret);
+		mclog_pedantic("Could not join to the requested thread. { pthread_join = %i }", ret);
 	}
 
 	return ret;
@@ -131,7 +131,7 @@ int_t thread_cancel(pthread_t thread) {
 
 	// ESRCH is returned if the thread has already exited, so we don't need to log any error message.
 	if (result && result != ESRCH) {
-		log_pedantic("Could not cancel the requested thread. {pthread_cancel = %i}", result);
+		mclog_pedantic("Could not cancel the requested thread. {pthread_cancel = %i}", result);
 	}
 
 	return result;

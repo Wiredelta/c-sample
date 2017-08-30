@@ -247,17 +247,17 @@ stringer_t * ip_subnet(ip_t *address, stringer_t *output) {
 	size_t len = INET6_ADDRSTRLEN;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < len) ||	(!st_valid_avail(opts) && st_length_get(output) < len))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",	st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), len);
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",	st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(len))) {
-		log_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len);
+		mclog_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len);
 		return NULL;
 	}
 
@@ -275,7 +275,7 @@ stringer_t * ip_subnet(ip_t *address, stringer_t *output) {
 	}
 
 	if (!len || len > INET6_ADDRSTRLEN) {
-		log_pedantic("An error occurred while trying to translate the address into a string. {length = %zu}", len);
+		mclog_pedantic("An error occurred while trying to translate the address into a string. {length = %zu}", len);
 
 		if (!output) {
 			st_free(result);
@@ -301,23 +301,23 @@ stringer_t * ip_presentation(ip_t *address, stringer_t *output) {
 	size_t len = INET6_ADDRSTRLEN;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && st_avail_get(output) < len) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",	st_avail_get(output), len);
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",	st_avail_get(output), len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(len))) {
-		log_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len);
+		mclog_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len);
 		return NULL;
 	}
 
 	// Write the address out.
 	if (!(ret = (chr_t *)inet_ntop(address->family, (address->family == AF_INET ? (void *)&(address->ip4.s_addr) : (void *)&(address->ip6.__in6_u.__u6_addr32)), st_char_get(result), len))) {
-		log_pedantic("An error occurred while trying to translate the address into a string. {inet_ntop = NULL / error = %s}", strerror_r(errno, bufptr, buflen));
+		mclog_pedantic("An error occurred while trying to translate the address into a string. {inet_ntop = NULL / error = %s}", strerror_r(errno, bufptr, buflen));
 		if (!output) st_free(result);
 		return NULL;
 	}
@@ -344,17 +344,17 @@ stringer_t * ip_standard(ip_t *address, stringer_t *output) {
 	size_t len = INET6_ADDRSTRLEN;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && st_avail_get(output) < len) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",	st_avail_get(output), len);
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",	st_avail_get(output), len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(len))) {
-		log_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len);
+		mclog_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len);
 		return NULL;
 	}
 
@@ -387,7 +387,7 @@ stringer_t * ip_standard(ip_t *address, stringer_t *output) {
 	}
 	// A very unlikely occurrence at this point.
 	else {
-		log_pedantic("IP address conversion attempted on unsupported family type.");
+		mclog_pedantic("IP address conversion attempted on unsupported family type.");
 
 		if (!output) {
 			st_free(result);
@@ -418,17 +418,17 @@ stringer_t * ip_reversed(ip_t *address, stringer_t *output) {
 	stringer_t *result = NULL;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && st_avail_get(output) < len) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",	st_avail_get(output), len);
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",	st_avail_get(output), len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(len))) {
-		log_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len);
+		mclog_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len);
 		return NULL;
 	}
 

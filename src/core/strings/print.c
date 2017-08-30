@@ -24,7 +24,7 @@ size_t st_vsprint(stringer_t *s, chr_t *format, va_list args) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_destination(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return 0;
 	}
 #endif
@@ -40,7 +40,7 @@ size_t st_vsprint(stringer_t *s, chr_t *format, va_list args) {
 
 #ifdef MAGMA_PEDANTIC
 	if (length > avail) {
-		log_pedantic("The output buffer was not large enough to hold the output, so the result was truncated.");
+		mclog_pedantic("The output buffer was not large enough to hold the output, so the result was truncated.");
 	}
 #endif
 
@@ -106,7 +106,7 @@ stringer_t * st_vaprint_opts(uint32_t opts, chr_t *format, va_list args) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_destination(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return NULL;
 	}
 #endif
@@ -123,7 +123,7 @@ stringer_t * st_vaprint_opts(uint32_t opts, chr_t *format, va_list args) {
 
 	// Print the provided format into the newly allocated buffer.
 	if ((length = vsnprintf(out, length + 1, format, args)) != expected) {
-		log_pedantic("The print operation did not generate the amount of data we expected.");
+		mclog_pedantic("The print operation did not generate the amount of data we expected.");
 		st_free(result);
 		result = NULL;
 	}

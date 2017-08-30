@@ -21,7 +21,7 @@ bool_t st_search_cs(stringer_t *haystack, stringer_t *needle, size_t *location) 
 	size_t i, j, hlen, nlen;
 
 	if (st_empty_out(haystack, &h, &hlen) || st_empty_out(needle, &n, &nlen)) {
-		log_pedantic("Passed an empty string.");
+		mclog_pedantic("Passed an empty string.");
 		return false;
 	} else if (nlen > hlen) {
 		return false;
@@ -72,7 +72,7 @@ bool_t st_search_ci(stringer_t *haystack, stringer_t *needle, size_t *location) 
 	size_t i, j, hlen, nlen;
 
 	if (st_empty_out(haystack, &h, &hlen) || st_empty_out(needle, &n, &nlen)) {
-		log_pedantic("Passed an empty string.");
+		mclog_pedantic("Passed an empty string.");
 		return false;
 	}
 
@@ -120,7 +120,7 @@ bool_t st_search_chr(stringer_t *haystack, chr_t needle, size_t *location) {
 	size_t hlen;
 
 	if (st_empty_out(haystack, &h, &hlen)) {
-		log_pedantic("Passed an empty string.");
+		mclog_pedantic("Passed an empty string.");
 		return false;
 	}
 

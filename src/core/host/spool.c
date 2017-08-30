@@ -80,12 +80,12 @@ int_t spool_check(stringer_t *path) {
 
 		// We only record errors once per hour, otherwise we'd fill the log file up.
 		if ((result = folder_exists(path, true)) < 0 && ((now = time(NULL)) - spool_check_failure) > 3600) {
-			log_critical("Unable to access the spool directory. {mkdir = %i / path = %.*s}", result, st_length_int(path), st_char_get(path));
+			mclog_critical("Unable to access the spool directory. {mkdir = %i / path = %.*s}", result, st_length_int(path), st_char_get(path));
 			spool_check_failure = now;
 		}
 #ifdef MAGMA_PEDANTIC
 		else if (result == 1) {
-			log_info("The spool directory was created successfully. {path = %.*s}", st_length_int(path), st_char_get(path));
+			mclog_info("The spool directory was created successfully. {path = %.*s}", st_length_int(path), st_char_get(path));
 		}
 #endif
 	}
@@ -140,7 +140,7 @@ int_t spool_mktemp(int_t spool, chr_t *prefix) {
 				// If the path is valid, but were still failing, record an error message in the log file, but only once an hour.
 				mutex_lock(&spool_error_lock);
 				if (((now = time(NULL)) - spool_creation_failure) > 3600) {
-					log_critical("Temporary file creation failed. {mkostemp = %i / errno = %i / strerror = %s / file = %.*s}", fd, err_info, strerror_r(err_info, MEMORYBUF(1024), 1024),
+					mclog_critical("Temporary file creation failed. {mkostemp = %i / errno = %i / strerror = %s / file = %.*s}", fd, err_info, strerror_r(err_info, MEMORYBUF(1024), 1024),
 						st_length_int(template), st_char_get(template));
 					spool_creation_failure = now;
 				}
@@ -154,7 +154,7 @@ int_t spool_mktemp(int_t spool, chr_t *prefix) {
 
 	// We need to explicitly unlink the file or the data will remain after the application exits.
 	if (fd >= 0 && unlink(st_char_get(template)) != 0) {
-		log_pedantic("A temporary file has been created, but could not be unlinked. {unlink = %i / file = %.*s}", errno, st_length_int(template), st_char_get(template));
+		mclog_pedantic("A temporary file has been created, but could not be unlinked. {unlink = %i / file = %.*s}", errno, st_length_int(template), st_char_get(template));
 	}
 
 	rwlock_unlock(&spool_creation_lock);
@@ -191,7 +191,7 @@ int_t spool_check_file(const char *file, const struct stat *info, int type) {
 
 	if (type == FTW_F) {
 		if (unlink(file)) {
-			log_error("An error occurred while trying to unlink a temporary file inside the spool. {%s / %s}", strerror_r(errno, bufptr, buflen), file);
+			mclog_error("An error occurred while trying to unlink a temporary file inside the spool. {%s / %s}", strerror_r(errno, bufptr, buflen), file);
 			mutex_lock(&spool_error_lock);
 			spool_errors++;
 			mutex_unlock(&spool_error_lock);
@@ -215,7 +215,7 @@ int_t spool_cleanup(void) {
 	uint64_t before = spool_files_cleaned;
 
 	if (!(base = spool_path(MAGMA_SPOOL_BASE))) {
-		log_error("Unable to build the spool path.");
+		mclog_error("Unable to build the spool path.");
 		return -1;
 	}
 
@@ -225,12 +225,12 @@ int_t spool_cleanup(void) {
 
 	// Non-zero return values from ftw trigger the return value -1, otherwise we calculate the number of files cleaned and return that value instead.
 	if (result) {
-		log_error("Unable to traverse the spool directory. {path = %.*s}", st_length_int(base), st_char_get(base));
+		mclog_error("Unable to traverse the spool directory. {path = %.*s}", st_length_int(base), st_char_get(base));
 		result = -1;
 	}
 #ifdef MAGMA_PEDANTIC
 	else if ((result = spool_files_cleaned - before)) {
-		log_pedantic("%i files needed to be purged from the spool.", result);
+		mclog_pedantic("%i files needed to be purged from the spool.", result);
 	}
 #else
 	else {
@@ -255,7 +255,7 @@ void spool_stop(void) {
 
 	// Since spool_cleanup pulls the base path from the current config, we skip straight to the traversal logic using the base path we stored during startup.
 	if (spool_base && ftw(st_char_get(spool_base), spool_check_file, 32)) {
-		log_pedantic("Unable to clean the spool directory. {path = %.*s}", st_length_int(spool_base), st_char_get(spool_base));
+		mclog_pedantic("Unable to clean the spool directory. {path = %.*s}", st_length_int(spool_base), st_char_get(spool_base));
 	}
 
 	if (spool_base) {
@@ -264,7 +264,7 @@ void spool_stop(void) {
 	}
 
 #ifdef MAGMA_PEDANTIC
-	if (spool_files_cleaned - before > 0) log_pedantic("%lu files needed to be purged from the spool.", spool_files_cleaned - before);
+	if (spool_files_cleaned - before > 0) mclog_pedantic("%lu files needed to be purged from the spool.", spool_files_cleaned - before);
 #endif
 
 	return;
@@ -293,7 +293,7 @@ bool_t spool_start(void) {
 
 		if (path) {
 			if (spool_check(path)) {
-				log_critical("Spool path is invalid. {path = %.*s}", st_length_int(path), st_char_get(path));
+				mclog_critical("Spool path is invalid. {path = %.*s}", st_length_int(path), st_char_get(path));
 				result = false;
 			}
 
@@ -301,19 +301,19 @@ bool_t spool_start(void) {
 			path = NULL;
 		}
 		else {
-			log_critical("Spool location is invalid.");
+			mclog_critical("Spool location is invalid.");
 			result = false;
 		}
 	}
 
 	// We store the base location outside of the config structure since spool_stop needs to be called after the config is freed. And we
 	if (result && !(spool_base = spool_path(MAGMA_SPOOL_BASE))) {
-		log_critical("Unable to remove stale files found inside the spool directory.");
+		mclog_critical("Unable to remove stale files found inside the spool directory.");
 		result = false;
 	}
 	// Note that if the cleanup function fails spool_base is freed and set to NULL which will prevent spool_stop from attempting to cleanup the spool during shutdown.
 	else if (spool_cleanup() < 0) {
-		log_critical("Unable to remove stale files found inside the spool directory. {path = %.*s}", st_length_int(spool_base), st_char_get(spool_base));
+		mclog_critical("Unable to remove stale files found inside the spool directory. {path = %.*s}", st_length_int(spool_base), st_char_get(spool_base));
 		st_free(spool_base);
 		spool_base = NULL;
 		result = false;

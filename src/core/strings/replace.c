@@ -24,13 +24,13 @@ int_t st_replace(stringer_t **target, stringer_t *pattern, stringer_t *replaceme
 	// replacement can be blank but it can't be null
 	if (!target || st_empty_out(*target, &tptr, &tlen) || st_empty_out(pattern, &pptr, &plen) ||
 			(st_empty_out(replacement, &rptr, &rlen) && !st_char_get(replacement))) {
-		log_pedantic("Sanity check failed. Passed a NULL pointer.");
+		mclog_pedantic("Sanity check failed. Passed a NULL pointer.");
 		return -1;
 	}
 
 	// Check to make sure the target is big enough to hold the pattern.
 	if (tlen < plen) {
-//		log_pedantic("The target isn't long enough to contain the pattern.");
+//		mclog_pedantic("The target isn't long enough to contain the pattern.");
 		return 0;
 	}
 
@@ -66,7 +66,7 @@ int_t st_replace(stringer_t **target, stringer_t *pattern, stringer_t *replaceme
 
 	// Allocate a new stringer.
 	if (!(output = st_alloc(olen))) {
-		log_pedantic("Could not allocate %zu bytes for the new string.", olen);
+		mclog_pedantic("Could not allocate %zu bytes for the new string.", olen);
 		// QUESTION: -3?
 		return -3;
 	}
@@ -111,11 +111,11 @@ stringer_t * st_swap(stringer_t *target, uchr_t pattern, uchr_t replacement) {
 	uchr_t *tptr;
 
 	if (st_empty_out(target, &tptr, &tlen)) {
-		log_pedantic("Sanity check failed. Passed a NULL pointer.");
+		mclog_pedantic("Sanity check failed. Passed a NULL pointer.");
 		return target;
 	}
 
-	log_check(pattern == replacement);
+	mclog_check(pattern == replacement);
 
 	// Increment through and replace the pattern.
 	for (size_t i = 0; i < tlen; i++) {

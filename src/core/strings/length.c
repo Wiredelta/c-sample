@@ -24,7 +24,7 @@ size_t st_length_get(stringer_t *s) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_opts(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return 0;
 	}
 #endif
@@ -55,7 +55,7 @@ size_t st_length_get(stringer_t *s) {
 			result = ((mapped_t *)s)->length;
 			break;
 		default:
-			log_pedantic("Invalid string type.");
+			mclog_pedantic("Invalid string type.");
 			break;
 	}
 
@@ -77,13 +77,13 @@ int_t st_length_int(stringer_t *s) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_opts(*((uint32_t *)s))) {
-		log_pedantic("Invalid string options. {opt = %u}", *((uint32_t *)s));
+		mclog_pedantic("Invalid string options. {opt = %u}", *((uint32_t *)s));
 		return 0;
 	}
 #endif
 
 	if ((len = st_length_get(s)) > INT_MAX) {
-		log_pedantic("Requested length is greater than INT_MAX. {nuller.length = %zu}", len);
+		mclog_pedantic("Requested length is greater than INT_MAX. {nuller.length = %zu}", len);
 		return INT_MAX;
 	}
 
@@ -106,7 +106,7 @@ size_t st_length_set(stringer_t *s, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_tracked(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return 0;
 	}
 #endif
@@ -117,20 +117,20 @@ size_t st_length_set(stringer_t *s, size_t len) {
 			break;
 		case (MANAGED_T):
 			if (len > ((managed_t *)s)->avail) {
-				log_pedantic("The provided length is greater than the size of the buffer allocated. {avail = %lu / len = %lu}", ((managed_t *)s)->avail, len);
+				mclog_pedantic("The provided length is greater than the size of the buffer allocated. {avail = %lu / len = %lu}", ((managed_t *)s)->avail, len);
 				len = ((managed_t *)s)->avail;
 			}
 			((managed_t *)s)->length = len;
 			break;
 		case (MAPPED_T):
 			if (len > ((mapped_t *)s)->avail) {
-				log_pedantic("The provided length is greater than the size of the buffer allocated. {avail = %lu / len = %lu}", ((mapped_t *)s)->avail, len);
+				mclog_pedantic("The provided length is greater than the size of the buffer allocated. {avail = %lu / len = %lu}", ((mapped_t *)s)->avail, len);
 				len = ((mapped_t *)s)->avail;
 			}
 			((mapped_t *)s)->length = len;
 			break;
 		default:
-			log_pedantic("Invalid string type.");
+			mclog_pedantic("Invalid string type.");
 			len = 0;
 			break;
 	}
@@ -154,7 +154,7 @@ size_t st_avail_get(stringer_t *s) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_opts(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return 0;
 	}
 #endif
@@ -190,7 +190,7 @@ size_t st_avail_set(stringer_t *s, size_t avail) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_avail(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return 0;
 	}
 #endif
@@ -203,7 +203,7 @@ size_t st_avail_set(stringer_t *s, size_t avail) {
 			((mapped_t *)s)->avail = avail;
 			break;
 		default:
-			log_pedantic("Available space is not tracked by the provided type.");
+			mclog_pedantic("Available space is not tracked by the provided type.");
 			avail = 0;
 			break;
 	}

@@ -27,7 +27,7 @@ int_t tcp_error(int error) {
 	// that on some platforms EWOULDBLOCK and EAGAIN are technically identical, but we explicitly check for both so
 	// logic remains compatible with systems where they differ.
 	else if (result < 0 && (error != EWOULDBLOCK || error != EAGAIN || error != EINTR)) {
-		log_pedantic("Ambiguous TCP error code. { errno = %i / error = %s }",
+		mclog_pedantic("Ambiguous TCP error code. { errno = %i / error = %s }",
 			error, strerror_r(error, MEMORYBUF(1024), 1024));
 	}
 
@@ -61,7 +61,7 @@ int_t tcp_status(int sockd) {
 		result = tcp_error(error);
 	}
 
-//	log_pedantic("tcp status = %i / errno = %i", result, error);
+//	mclog_pedantic("tcp status = %i / errno = %i", result, error);
 
 	return result;
 }
@@ -93,7 +93,7 @@ int tcp_continue(int sockd, int result, int syserror) {
 	// Handle non-errors.
 	else if (result <= 0 && (syserror == 0 || syserror == EWOULDBLOCK || syserror == EAGAIN || syserror == EINTR)) return 0;
 
-	log_pedantic("A TCP error occurred. { errno = %i / error = %s / message = %s }", syserror, errno_name(syserror),
+	mclog_pedantic("A TCP error occurred. { errno = %i / error = %s / message = %s }", syserror, errno_name(syserror),
 		strerror_r(syserror, message, 1024));
 	return -1;
 }
@@ -112,13 +112,13 @@ int tcp_read(int sockd, void *buffer, int length, bool_t block) {
 	int result = 0, counter = 0;
 
 	if (sockd < 0 || !buffer || !length) {
-		log_pedantic("Invalid parameters were provided to the TCP read function.");
+		mclog_pedantic("Invalid parameters were provided to the TCP read function.");
 		return 0;
 	}
 
 #ifdef MAGMA_PEDANTIC
 	else if (!block) {
-		log_pedantic("Non-blocking TCP read calls have not been fully implemented yet.");
+		mclog_pedantic("Non-blocking TCP read calls have not been fully implemented yet.");
 	}
 #endif
 
@@ -143,13 +143,13 @@ int tcp_write(int sockd, const void *buffer, int length, bool_t block) {
 	int result = 0, counter = 0;
 
 	if (sockd < 0 || !buffer || !length) {
-		log_pedantic("Passed invalid parameters for a call to the TCP write function.");
+		mclog_pedantic("Passed invalid parameters for a call to the TCP write function.");
 		return 0;
 	}
 
 #ifdef MAGMA_PEDANTIC
 	else if (!block) {
-		log_pedantic("Non-blocking TCP write calls have not been fully implemented yet.");
+		mclog_pedantic("Non-blocking TCP write calls have not been fully implemented yet.");
 	}
 #endif
 

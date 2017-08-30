@@ -18,13 +18,13 @@ array_t * ar_alloc(size_t size) {
 
 	// We can't create zero length arrays.
 	if (!size) {
-		log_pedantic("A size of zero was passed in.");
+		mclog_pedantic("A size of zero was passed in.");
 		return NULL;
 	}
 
 	// We can't have arrays longer than ARRAY_MAX_ELEMENTS.
 	if (size >= ARRAY_MAX_ELEMENTS) {
-		log_pedantic("An array size greater than %i was passed in.", ARRAY_MAX_ELEMENTS);
+		mclog_pedantic("An array size greater than %i was passed in.", ARRAY_MAX_ELEMENTS);
 		return NULL;
 	}
 
@@ -37,7 +37,7 @@ array_t * ar_alloc(size_t size) {
 		*(size_t *)result = size;
 	}
 	else {
-		log_error("We were unable to allocate an array of %zu elements totaling %zu bytes.", size, sizeof(size_t) + sizeof(size_t) +
+		mclog_error("We were unable to allocate an array of %zu elements totaling %zu bytes.", size, sizeof(size_t) + sizeof(size_t) +
 			(size * (sizeof(uint32_t) + sizeof(void *))));
 	}
 
@@ -54,7 +54,7 @@ size_t ar_avail_get(array_t *array) {
 	size_t size;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return 0;
 	}
 
@@ -73,7 +73,7 @@ size_t ar_length_get(array_t *array) {
 	size_t size;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return 0;
 	}
 
@@ -96,13 +96,13 @@ uint32_t ar_field_type(array_t *array, size_t element) {
 	uint32_t result;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return ARRAY_TYPE_EMPTY;
 	}
 
 	// We store the array length so we can detect requests for the first empty slot without logging it.
 	if (element >= (len = ar_length_get(array))) {// && element != 0) {
-		log_pedantic("An invalid element number was passed in.");
+		mclog_pedantic("An invalid element number was passed in.");
 		return ARRAY_TYPE_EMPTY;
 	}
 	// QUESTION: Remove code? This condition can never be reached.
@@ -126,16 +126,16 @@ stringer_t * ar_field_st(array_t *array, size_t element) {
 	stringer_t *result;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return NULL;
 	}
 
 	if (ar_field_type(array, element) != ARRAY_TYPE_STRINGER) {
-		log_pedantic("A stringer_t pointer was requested, but the type code does not match.");
+		mclog_pedantic("A stringer_t pointer was requested, but the type code does not match.");
 	}
 
 	if (element >= ar_length_get(array)) {
-		log_pedantic("An invalid element number was passed in.");
+		mclog_pedantic("An invalid element number was passed in.");
 		return NULL;
 	}
 
@@ -155,16 +155,16 @@ chr_t * ar_field_ns(array_t *array, size_t element) {
 	chr_t *result;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return NULL;
 	}
 
 	if (ar_field_type(array, element) != ARRAY_TYPE_NULLER) {
-		log_pedantic("A stringer_t pointer was requested, but the type code does not match.");
+		mclog_pedantic("A stringer_t pointer was requested, but the type code does not match.");
 	}
 
 	if (element >= ar_length_get(array)) {
-		log_pedantic("An invalid element number was passed in.");
+		mclog_pedantic("An invalid element number was passed in.");
 		return NULL;
 	}
 
@@ -184,16 +184,16 @@ array_t * ar_field_ar(array_t *array, size_t element) {
 	array_t *result;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return NULL;
 	}
 
 	if (ar_field_type(array, element) != ARRAY_TYPE_ARRAY) {
-		log_pedantic("A stringer_t pointer was requested, but the type code does not match.");
+		mclog_pedantic("A stringer_t pointer was requested, but the type code does not match.");
 	}
 
 	if (element >= ar_length_get(array)) {
-		log_pedantic("An invalid element number was passed in.");
+		mclog_pedantic("An invalid element number was passed in.");
 		return NULL;
 	}
 
@@ -213,16 +213,16 @@ placer_t * ar_field_pl(array_t *array, size_t element) {
 	placer_t *result;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return 0;
 	}
 
 	if (ar_field_type(array, element) != ARRAY_TYPE_PLACER) {
-		log_pedantic("A placer_t pointer was requested, but the type code does not match.");
+		mclog_pedantic("A placer_t pointer was requested, but the type code does not match.");
 	}
 
 	if (element >= ar_length_get(array)) {
-		log_pedantic("An invalid element number was passed in.");
+		mclog_pedantic("An invalid element number was passed in.");
 		return 0;
 	}
 
@@ -242,16 +242,16 @@ void * ar_field_ptr(array_t *array, size_t element) {
 	void *result;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return 0;
 	}
 
 	if (ar_field_type(array, element) != ARRAY_TYPE_POINTER) {
-		log_pedantic("A pointer was requested, but the type code does not match.");
+		mclog_pedantic("A pointer was requested, but the type code does not match.");
 	}
 
 	if (element >= ar_length_get(array)) {
-		log_pedantic("An invalid element number was passed in.");
+		mclog_pedantic("An invalid element number was passed in.");
 		return 0;
 	}
 
@@ -269,12 +269,12 @@ void * ar_field_ptr(array_t *array, size_t element) {
 void ar_length_set(array_t *array, size_t used) {
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return;
 	}
 
 	if (used > ar_avail_get(array)) {
-		log_pedantic("Trying to set the used variable to %zu when the allocated size is %zu.", used, ar_avail_get(array));
+		mclog_pedantic("Trying to set the used variable to %zu when the allocated size is %zu.", used, ar_avail_get(array));
 	}
 
 	*(size_t *)(array + sizeof(size_t)) = used;
@@ -298,12 +298,12 @@ int_t ar_append(array_t **array, uint32_t type, void *item) {
 	array_t *holder = NULL;
 
 	if (!array) {
-		log_pedantic("An NULL pointer was passed in.");
+		mclog_pedantic("An NULL pointer was passed in.");
 		return 0;
 	}
 
 	if (type == ARRAY_TYPE_EMPTY) {
-		log_pedantic("An invalid item was passed in.");
+		mclog_pedantic("An invalid item was passed in.");
 		return 0;
 	}
 
@@ -311,7 +311,7 @@ int_t ar_append(array_t **array, uint32_t type, void *item) {
 	if (!*array) {
 
 		if (!(holder = ar_alloc(1))) {
-			log_pedantic("We were unable to allocate a buffer for the array.");
+			mclog_pedantic("We were unable to allocate a buffer for the array.");
 			return 0;
 		}
 
@@ -324,7 +324,7 @@ int_t ar_append(array_t **array, uint32_t type, void *item) {
 		if (size == ar_length_get(*array)) {
 
 			if (!(holder = ar_alloc(size + 1))) {
-				log_pedantic("We were unable to allocate a new buffer of %zu bytes for the array.", size + 1);
+				mclog_pedantic("We were unable to allocate a new buffer of %zu bytes for the array.", size + 1);
 				return 0;
 			}
 
@@ -372,7 +372,7 @@ void ar_free(array_t *array) {
 	void *pointer;
 
 	if (!array) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return;
 	}
 

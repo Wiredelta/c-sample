@@ -48,13 +48,13 @@ stacker_t * stacker_alloc(void *free_function) {
 	stacker_t *result;
 
 	if ((result = mm_alloc(sizeof(stacker_t))) == NULL) {
-		log_pedantic("Unable to allocate %zu bytes for a stacked list.", sizeof(stacker_t));
+		mclog_pedantic("Unable to allocate %zu bytes for a stacked list.", sizeof(stacker_t));
 		return NULL;
 	}
 
 	// Initialize the mutex.
 	if (mutex_init(&(result->mutex), NULL) != 0) {
-		log_pedantic("Unable to initialize the mutex.");
+		mclog_pedantic("Unable to initialize the mutex.");
 		mm_free(result);
 		return NULL;
 	}
@@ -98,11 +98,11 @@ int_t stacker_push(stacker_t *stack, void *data) {
 	stacker_node_t *holder, *node;
 
 	if (stack == NULL || data == NULL) {
-		log_pedantic("Passed a NULL pointer.");
+		mclog_pedantic("Passed a NULL pointer.");
 		return 0;
 	}
 	else if ((node = mm_alloc(sizeof(stacker_node_t))) == NULL) {
-		log_pedantic("Unable to allocate %zu bytes for a linked node.", sizeof(stacker_node_t));
+		mclog_pedantic("Unable to allocate %zu bytes for a linked node.", sizeof(stacker_node_t));
 		return 0;
 	}
 
@@ -119,7 +119,7 @@ int_t stacker_push(stacker_t *stack, void *data) {
 		stack->last = node;
 	}
 	else {
-		log_error("Last was NULL, but the list pointer wasn't. Finding the end the old fashioned way.");
+		mclog_error("Last was NULL, but the list pointer wasn't. Finding the end the old fashioned way.");
 		holder = stack->list;
 		while (holder->next != NULL) {
 			holder = (stacker_node_t *)holder->next;

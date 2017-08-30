@@ -70,7 +70,7 @@ stringer_t * url_encode(stringer_t *s) {
 	size_t len, expected = 0, written = 0;
 
 	if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for encoding.");
+		mclog_pedantic("An empty string was passed in for encoding.");
 		return NULL;
 	}
 
@@ -88,7 +88,7 @@ stringer_t * url_encode(stringer_t *s) {
 
 	// Allocate one byte for printable characters and three bytes for non-printable characters.
 	if (!(output = st_alloc_opts(MANAGED_T | JOINTED | HEAP, expected))) {
-		log_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", expected);
+		mclog_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", expected);
 		return NULL;
 	}
 
@@ -131,13 +131,13 @@ stringer_t * url_decode(stringer_t *s) {
 	size_t len, written = 0;
 
 	if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for decoding.");
+		mclog_pedantic("An empty string was passed in for decoding.");
 		return NULL;
 	}
 
 	// Allocate one byte for printable characters and three bytes for non-printable characters.
 	if (!(output = st_alloc(len))) {
-		log_pedantic("Could not allocate a buffer large enough to hold decoded result. {requested = %zu}", len);
+		mclog_pedantic("Could not allocate a buffer large enough to hold decoded result. {requested = %zu}", len);
 		return NULL;
 	}
 

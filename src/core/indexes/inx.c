@@ -75,7 +75,7 @@ uint64_t inx_options(inx_t *inx) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx) {
-		log_pedantic("The index pointer is invalid.");
+		mclog_pedantic("The index pointer is invalid.");
 		return 0;
 	}
 #endif
@@ -98,7 +98,7 @@ uint64_t inx_count(inx_t *inx) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx) {
-		log_pedantic("The index pointer is invalid.");
+		mclog_pedantic("The index pointer is invalid.");
 		return 0;
 	}
 #endif
@@ -116,7 +116,7 @@ uint64_t inx_serial(inx_t *inx) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx) {
-		log_pedantic("The index pointer is invalid.");
+		mclog_pedantic("The index pointer is invalid.");
 		return 0;
 	}
 #endif
@@ -143,7 +143,7 @@ bool_t inx_append(inx_t *inx, multi_t key, void *data) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx || !(inx->append)) {
-		log_pedantic("Invalid index or function pointer.");
+		mclog_pedantic("Invalid index or function pointer.");
 		return false;
 	}
 #endif
@@ -168,7 +168,7 @@ bool_t inx_insert(inx_t *inx, multi_t key, void *data) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx || !(inx->insert)) {
-		log_pedantic("Invalid index or function pointer.");
+		mclog_pedantic("Invalid index or function pointer.");
 		return false;
 	}
 #endif
@@ -193,7 +193,7 @@ bool_t inx_replace(inx_t *inx, multi_t key, void *data) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx || !(inx->delete) || !(inx->insert)) {
-		log_pedantic("Invalid index or function pointer.");
+		mclog_pedantic("Invalid index or function pointer.");
 		return false;
 	}
 #endif
@@ -221,7 +221,7 @@ bool_t inx_delete(inx_t *inx, multi_t key) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx || !(inx->delete)) {
-		log_pedantic("Invalid index or function pointer.");
+		mclog_pedantic("Invalid index or function pointer.");
 		return false;
 	}
 #endif
@@ -245,7 +245,7 @@ void * inx_find(inx_t *inx, multi_t key) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx || !(inx->find)) {
-		log_pedantic("Invalid index or function pointer.");
+		mclog_pedantic("Invalid index or function pointer.");
 		return NULL;
 	}
 #endif
@@ -263,7 +263,7 @@ void inx_free(inx_t *inx) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx || !(inx->index_free)) {
-		log_pedantic("The function pointer is invalid.");
+		mclog_pedantic("The function pointer is invalid.");
 		return;
 	}
 #endif
@@ -286,7 +286,7 @@ void inx_truncate(inx_t *inx) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!inx || !(inx->index_truncate)) {
-		log_pedantic("The function pointer is invalid.");
+		mclog_pedantic("The function pointer is invalid.");
 		return;
 	}
 #endif
@@ -332,7 +332,7 @@ inx_t * inx_alloc(uint64_t options, void *data_free) {
 		inx = hashed_alloc(options, data_free);
 		break;
 	default:
-		log_options(M_LOG_ERROR | M_LOG_STACK_TRACE, "Unsupported index type detected. {type = %lu}", options & MAGMA_INDEX_TYPE);
+		mclog_options(M_LOG_ERROR | M_LOG_STACK_TRACE, "Unsupported index type detected. {type = %lu}", options & MAGMA_INDEX_TYPE);
 		break;
 	};
 

@@ -19,7 +19,7 @@
  */
 uint8_t uint8_clamp(uint8_t min, uint8_t max, uint8_t number) {
 	if (min > max || max < min) {
-		log_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
+		mclog_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
 			"{ min = %hhu / max = %hhu / number = %hhu )", (min > max ? "min" : "max"), (min > max ? "greater" : "less"),
 			(min > max ? "max" : "min"), min, max, number);
 		return number;
@@ -40,7 +40,7 @@ uint8_t uint8_clamp(uint8_t min, uint8_t max, uint8_t number) {
  */
 uint16_t uint16_clamp(uint16_t min, uint16_t max, uint16_t number) {
 	if (min > max || max < min) {
-		log_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
+		mclog_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
 			"{ min = %hu / max = %hu / number = %hu )", (min > max ? "min" : "max"), (min > max ? "greater" : "less"),
 			(min > max ? "max" : "min"), min, max, number);
 		return number;
@@ -61,7 +61,7 @@ uint16_t uint16_clamp(uint16_t min, uint16_t max, uint16_t number) {
  */
 uint32_t uint32_clamp(uint32_t min, uint32_t max, uint32_t number) {
 	if (min > max || max < min) {
-		log_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
+		mclog_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
 			"{ min = %u / max = %u / number = %u )", (min > max ? "min" : "max"), (min > max ? "greater" : "less"),
 			(min > max ? "max" : "min"), min, max, number);
 		return number;
@@ -82,7 +82,7 @@ uint32_t uint32_clamp(uint32_t min, uint32_t max, uint32_t number) {
  */
 uint64_t uint64_clamp(uint64_t min, uint64_t max, uint64_t number) {
 	if (min > max || max < min) {
-		log_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
+		mclog_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
 			"{ min = %lu / max = %lu / number = %lu )", (min > max ? "min" : "max"), (min > max ? "greater" : "less"),
 			(min > max ? "max" : "min"), min, max, number);
 		return number;
@@ -103,7 +103,7 @@ uint64_t uint64_clamp(uint64_t min, uint64_t max, uint64_t number) {
  */
 int8_t int8_clamp(int8_t min, int8_t max, int8_t number) {
 	if (min > max || max < min) {
-		log_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
+		mclog_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
 			"{ min = %hhu / max = %hhu / number = %hhu )", (min > max ? "min" : "max"), (min > max ? "greater" : "less"),
 			(min > max ? "max" : "min"), min, max, number);
 		return number;
@@ -124,7 +124,7 @@ int8_t int8_clamp(int8_t min, int8_t max, int8_t number) {
  */
 int16_t int16_clamp(int16_t min, int16_t max, int16_t number) {
 	if (min > max || max < min) {
-		log_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
+		mclog_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
 			"{ min = %hu / max = %hu / number = %hu )", (min > max ? "min" : "max"), (min > max ? "greater" : "less"),
 			(min > max ? "max" : "min"), min, max, number);
 		return number;
@@ -145,7 +145,7 @@ int16_t int16_clamp(int16_t min, int16_t max, int16_t number) {
  */
 int32_t int32_clamp(int32_t min, int32_t max, int32_t number) {
 	if (min > max || max < min) {
-		log_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
+		mclog_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
 			"{ min = %u / max = %u / number = %u )", (min > max ? "min" : "max"), (min > max ? "greater" : "less"),
 			(min > max ? "max" : "min"), min, max, number);
 		return number;
@@ -166,7 +166,7 @@ int32_t int32_clamp(int32_t min, int32_t max, int32_t number) {
  */
 int64_t int64_clamp(int64_t min, int64_t max, int64_t number) {
 	if (min > max || max < min) {
-		log_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
+		mclog_pedantic("The range clamp is invalid. The %s value was %s than the %s value, so the original number value was returned. " \
 			"{ min = %lu / max = %lu / number = %lu )", (min > max ? "min" : "max"), (min > max ? "greater" : "less"),
 			(min > max ? "max" : "min"), min, max, number);
 		return number;

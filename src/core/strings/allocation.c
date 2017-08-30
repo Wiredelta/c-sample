@@ -33,7 +33,7 @@ void st_free(stringer_t *s) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_free(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return;
 	}
 #endif
@@ -78,7 +78,7 @@ void st_free(stringer_t *s) {
 			release(s);
 			break;
 		default:
-			log_pedantic("Invalid string options.");
+			mclog_pedantic("Invalid string options.");
 			break;
 	}
 
@@ -127,7 +127,7 @@ stringer_t * st_merge_opts(uint32_t opts, chr_t *format, ...) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_destination(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return NULL;
 	}
 #endif
@@ -225,7 +225,7 @@ stringer_t * st_import_opts(uint32_t opts, const void *s, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_destination(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return NULL;
 	}
 #endif
@@ -267,20 +267,20 @@ stringer_t * st_copy_in(stringer_t *s, void *buf, size_t len) {
 	void *dstbuf;
 
 	if (!s || !buf || !len) {
-		log_pedantic("Managed string copy operation contained NULL input.");
+		mclog_pedantic("Managed string copy operation contained NULL input.");
 		return NULL;
 	} else if (st_avail_get(s) < len) {
-		log_pedantic("Managed string was not big enough to store copied data.");
+		mclog_pedantic("Managed string was not big enough to store copied data.");
 		return NULL;
 	} else if (!(dstbuf = st_data_get(s))) {
-		log_pedantic("Could not retrieve managed string data buffer for copy operation.");
+		mclog_pedantic("Could not retrieve managed string data buffer for copy operation.");
 		return NULL;
 	}
 
 	mm_copy(dstbuf, buf, len);
 
 	if (!st_length_set(s, len)) {
-		log_pedantic("Error setting length of copied string.");
+		mclog_pedantic("Error setting length of copied string.");
 		return NULL;
 	}
 
@@ -311,7 +311,7 @@ stringer_t * st_dupe_opts(uint32_t opts, stringer_t *s) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_opts(opts) || !st_valid_opts(src_opts)) {
-		log_pedantic("Invalid string options. {opt = %u}", st_valid_opts(opts) ? src_opts : opts);
+		mclog_pedantic("Invalid string options. {opt = %u}", st_valid_opts(opts) ? src_opts : opts);
 		return NULL;
 	}
 #endif
@@ -340,7 +340,7 @@ stringer_t * st_dupe_opts(uint32_t opts, stringer_t *s) {
 			break;
 
 		default:
-			log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+			mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 			break;
 	}
 
@@ -396,12 +396,12 @@ stringer_t * st_append_opts(size_t align, stringer_t *s, stringer_t *append) {
 
 	// We can only append to mapped strings or jointed managed strings.
 	if (s && !st_valid_append(*((uint32_t *)s))) {
-		log_pedantic("Invalid string options. {opt = %u}", *((uint32_t *)s));
+		mclog_pedantic("Invalid string options. {opt = %u}", *((uint32_t *)s));
 		return NULL;
 	}
 
 	if (!append || !(alen = st_length_get(append))) {
-		log_pedantic("The append string appears to be empty.");
+		mclog_pedantic("The append string appears to be empty.");
 		return s;
 	}
 
@@ -429,12 +429,12 @@ int_t st_append_out(size_t align, stringer_t **s, stringer_t *append) {
 
 	// We can only append to mapped strings or jointed managed strings.
 	if (!s || (*s && (!st_valid_destination(*((uint32_t *)*s)) || !(holder = *s)))) {
-		log_pedantic("Invalid string options. {opt = %u}", *((uint32_t *)s));
+		mclog_pedantic("Invalid string options. {opt = %u}", *((uint32_t *)s));
 		return -1;
 	}
 
 	if (!append || !(alen = st_length_get(append))) {
-		log_pedantic("The append string appears to be empty.");
+		mclog_pedantic("The append string appears to be empty.");
 		return 0;
 	}
 
@@ -445,7 +445,7 @@ int_t st_append_out(size_t align, stringer_t **s, stringer_t *append) {
 	// Otherwise check the amount of available space in the buffer and if necessary allocate more.
 	else if (st_avail_get(holder) - (slen = st_length_get(holder)) < alen &&
 		!(holder = st_realloc(*s, (slen + alen + align - 1) & ~(align - 1)))) {
-		log_pedantic("Append reallocation failed.");
+		mclog_pedantic("Append reallocation failed.");
 		return -1;
 	}
 
@@ -495,7 +495,7 @@ stringer_t * st_alloc_opts(uint32_t opts, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_opts(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return NULL;
 	}
 #endif
@@ -595,7 +595,7 @@ stringer_t * st_alloc_opts(uint32_t opts, size_t len) {
 			break;
 
 		default:
-			log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+			mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 			break;
 	}
 
@@ -647,7 +647,7 @@ stringer_t * st_realloc(stringer_t *s, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_opts(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return NULL;
 	}
 #endif
@@ -728,7 +728,7 @@ stringer_t * st_realloc(stringer_t *s, size_t len) {
 
 			// If the new length is larger, we will increase the file size using the ftruncate64 function.
 			if (avail >= ((mapped_t *)s)->avail && ftruncate64(((mapped_t *)s)->handle, avail)) {
-				log_pedantic("An error occurred while resizing a memory mapped file descriptor. { error = %s }", strerror_r(errno, MEMORYBUF(1024), 1024));
+				mclog_pedantic("An error occurred while resizing a memory mapped file descriptor. { error = %s }", strerror_r(errno, MEMORYBUF(1024), 1024));
 			}
 
 			// If we end up shrinking the available memory then we'll need to update the length variable to reflect that.
@@ -751,17 +751,17 @@ stringer_t * st_realloc(stringer_t *s, size_t len) {
 				// the amount of locked memory available under this user account.
 				if ((((mapped_t *)s)->opts & SECURE) && errno == EAGAIN && (system_ulimit_cur(RLIMIT_MEMLOCK) < len ||
 						system_ulimit_cur(RLIMIT_MEMLOCK) < (len + magma_core.secure.memory.length))) {
-					log_pedantic("Unable to resize the secure memory mapped buffer, the requested size exceeds the system limit for locked pages. " \
+					mclog_pedantic("Unable to resize the secure memory mapped buffer, the requested size exceeds the system limit for locked pages. " \
 							"{ limit = %lu / requested = %zu }", system_ulimit_cur(RLIMIT_MEMLOCK), len);
 				}
 				else {
-					log_pedantic("An error occurred while resizing a memory mapped buffer. { error = %s }", strerror_r(errno, MEMORYBUF(1024), 1024));
+					mclog_pedantic("An error occurred while resizing a memory mapped buffer. { error = %s }", strerror_r(errno, MEMORYBUF(1024), 1024));
 				}
 			}
 			break;
 
 		default:
-			log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+			mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 			break;
 	}
 
@@ -781,17 +781,17 @@ stringer_t * st_output(stringer_t *output, size_t len) {
 	stringer_t *result = NULL;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding a result.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding a result.");
 		return NULL;
 	}
 
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && st_avail_get(output) < len) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}", st_avail_get(output), len);
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}", st_avail_get(output), len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(len))) {
-		log_pedantic("The memory allocation of the output buffer failed. {requested = %zu}", len);
+		mclog_pedantic("The memory allocation of the output buffer failed. {requested = %zu}", len);
 		return NULL;
 	}
 

@@ -34,7 +34,7 @@ typedef struct __attribute__ ((packed)) {
 void * linked_record_get_data(linked_record_t *record, size_t element) {
 
 #ifdef MAGMA_PEDANTIC
-	if (!record) log_pedantic("The index pointer is invalid.");
+	if (!record) mclog_pedantic("The index pointer is invalid.");
 #endif
 
 	if (element != 0)	return NULL;
@@ -49,7 +49,7 @@ void * linked_record_get_data(linked_record_t *record, size_t element) {
 multi_t linked_record_get_key(linked_record_t *record) {
 
 #ifdef MAGMA_PEDANTIC
-	if (!record) log_pedantic("The index pointer is invalid.");
+	if (!record) mclog_pedantic("The index pointer is invalid.");
 #endif
 
 	if (!record)
@@ -67,9 +67,9 @@ multi_t linked_record_get_key(linked_record_t *record) {
 void linked_record_free(inx_t *index, linked_record_t *record) {
 
 #ifdef MAGMA_PEDANTIC
-	if (!index) log_pedantic("The index pointer is invalid.");
-	if (!record) log_pedantic("The record pointer is invalid.");
-	//if (!(index->data_free))	log_pedantic("The function pointer is invalid.");
+	if (!index) mclog_pedantic("The index pointer is invalid.");
+	if (!record) mclog_pedantic("The record pointer is invalid.");
+	//if (!(index->data_free))	mclog_pedantic("The function pointer is invalid.");
 #endif
 
 	if (!record) return;
@@ -150,7 +150,7 @@ bool_t linked_delete(void *inx, multi_t key) {
 
 	// We didn't find the correct node, or the index is corrupted.
 	if (node == NULL || node->record == NULL) {
-//		log_pedantic("Couldn't find the node.");
+//		mclog_pedantic("Couldn't find the node.");
 		return false;
 	}
 
@@ -195,11 +195,11 @@ bool_t linked_insert(void *inx, multi_t key, void *data) {
 	linked_node_t *holder, *node;
 
 	if ((node = mm_alloc(sizeof(linked_node_t))) == NULL) {
-		log_info("Unable to allocate %zu bytes for a linked node.", sizeof(linked_node_t));
+		mclog_info("Unable to allocate %zu bytes for a linked node.", sizeof(linked_node_t));
 		return false;
 	}
 	else if ((node->record = linked_record_alloc(key, data)) == NULL) {
-		log_info("Unable to allocate an index record.");
+		mclog_info("Unable to allocate an index record.");
 		mm_free(node);
 		return false;
 	}
@@ -247,11 +247,11 @@ bool_t linked_append(void *inx, multi_t key, void *data) {
 	linked_node_t *holder, *node;
 
 	if ((node = mm_alloc(sizeof(linked_node_t))) == NULL) {
-		log_info("Unable to allocate %zu bytes for a linked node.", sizeof(linked_node_t));
+		mclog_info("Unable to allocate %zu bytes for a linked node.", sizeof(linked_node_t));
 		return false;
 	}
 	else if ((node->record = linked_record_alloc(key, data)) == NULL) {
-		log_info("Unable to allocate an index record.");
+		mclog_info("Unable to allocate an index record.");
 		mm_free(node);
 		return false;
 	}
@@ -267,7 +267,7 @@ bool_t linked_append(void *inx, multi_t key, void *data) {
 		holder = index->last;
 #ifdef MAGMA_PEDANTIC
 		if (holder->next != NULL) {
-			log_pedantic("Appending to a linked list where the last variable doesn't appear to be the last node.");
+			mclog_pedantic("Appending to a linked list where the last variable doesn't appear to be the last node.");
 		}
 #endif
 		node->prev = (struct linked_node_t *)holder;
@@ -463,7 +463,7 @@ void * linked_cursor_alloc(inx_t *inx) {
 	linked_cursor_t *cursor;
 
 	if (!(cursor = mm_alloc(sizeof(linked_cursor_t)))) {
-		log_pedantic("Failed to allocate %zu bytes for a linked list index cursor.", sizeof(linked_cursor_t));
+		mclog_pedantic("Failed to allocate %zu bytes for a linked list index cursor.", sizeof(linked_cursor_t));
 		return NULL;
 	}
 

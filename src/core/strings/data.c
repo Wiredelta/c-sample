@@ -99,18 +99,18 @@ void st_data_set(stringer_t *s, void *data) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_jointed(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return;
 	}
 #endif
 
 	if (data && (opts & SECURE) && !mm_sec_secured(data)) {
-		log_pedantic("Assigning an insecure memory address to a secure string is impossible.");
+		mclog_pedantic("Assigning an insecure memory address to a secure string is impossible.");
 		return;
 	}
 
 	if (data && !(opts & JOINTED)) {
-		log_pedantic("Setting the data pointer on a non-jointed string is impossible.");
+		mclog_pedantic("Setting the data pointer on a non-jointed string is impossible.");
 		return;
 	}
 
@@ -156,7 +156,7 @@ void * st_data_get(stringer_t *s) {
 
 #ifdef MAGMA_PEDANTIC
 	else if (!st_valid_opts(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return NULL;
 	}
 #endif
@@ -222,7 +222,7 @@ void st_wipe(stringer_t *s) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_opts(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return;
 	}
 #endif
@@ -252,7 +252,7 @@ stringer_t * st_set(stringer_t *s, uint8_t set, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!st_valid_opts(opts)) {
-		log_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
+		mclog_pedantic("Invalid string options. { opt = %u = %s }", opts, st_info_opts(opts, MEMORYBUF(128), 128));
 		return NULL;
 	}
 #endif

@@ -65,7 +65,7 @@ bool_t mt_is_empty(multi_t multi) {
 		break;
 
 	default:
-		log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The mt_is_empty function was called on an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
+		mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The mt_is_empty function was called on an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
 		break;
 	}
 
@@ -101,7 +101,7 @@ bool_t mt_is_number(multi_t multi) {
 		result = true;
 		break;
 	default:
-		log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The mt_is_number function was called on an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
+		mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The mt_is_number function was called on an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
 		break;
 	}
 
@@ -156,7 +156,7 @@ uint64_t mt_get_number(multi_t multi) {
 	case (M_TYPE_BLOCK):
 	case (M_TYPE_EMPTY):
 	default:
-		log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The mt_get_number function was called on an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
+		mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The mt_get_number function was called on an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
 		break;
 	}
 
@@ -234,7 +234,7 @@ char * mt_get_char(const multi_t *multi) {
 		break;
 
 	default:
-		log_options(M_LOG_INFO | M_LOG_STACK_TRACE, "The mt_get_char function was called on an unsupported data type. {type = %s = %u}", type(multi->type), multi->type);
+		mclog_options(M_LOG_INFO | M_LOG_STACK_TRACE, "The mt_get_char function was called on an unsupported data type. {type = %s = %u}", type(multi->type), multi->type);
 		break;
 	}
 
@@ -302,7 +302,7 @@ size_t mt_get_length(multi_t multi) {
 		break;
 
 	default:
-		log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The mt_get_length function was called on an unsupported data type. {type = %s = %u}", type(multi.type), multi.type);
+		mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The mt_get_length function was called on an unsupported data type. {type = %s = %u}", type(multi.type), multi.type);
 		break;
 	}
 
@@ -375,7 +375,7 @@ M_TYPE mt_get_type(multi_t multi) {
 		break;
 
 	default:
-		log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The function mt_get_type was called using an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
+		mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The function mt_get_type was called using an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
 		break;
 	}
 
@@ -446,7 +446,7 @@ multi_t mt_set_type(multi_t multi, M_TYPE target) {
 		break;
 
 	default:
-		log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The function mt_set_type was called using an unsupported type. {type = %s = %u}", type(target), target);
+		mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The function mt_set_type was called using an unsupported type. {type = %s = %u}", type(target), target);
 		multi.type = EMPTY;
 		break;
 	}
@@ -550,7 +550,7 @@ multi_t mt_dupe(multi_t multi) {
 		break;
 
 	default:
-		log_pedantic("The function mt_dupe was called using an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
+		mclog_pedantic("The function mt_dupe was called using an unsupported type. {type = %s = %u}", type(multi.type), multi.type);
 		break;
 	}
 
@@ -579,7 +579,7 @@ bool_t ident_mt_mt(multi_t one, multi_t two) {
 
 		// For now, this function only supports comparing non-matched types if both types are strings.
 		else {
-			log_pedantic("Invalid multi-type comparison.");
+			mclog_pedantic("Invalid multi-type comparison.");
 		}
 
 	}
@@ -661,7 +661,7 @@ bool_t ident_mt_mt(multi_t one, multi_t two) {
 				break;
 
 			default:
-				log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The ident_mt_mt function was called on an unsupported data type.");
+				mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The ident_mt_mt function was called on an unsupported data type.");
 				result = false;
 				break;
 		}
@@ -693,7 +693,7 @@ int32_t cmp_mt_mt(multi_t one, multi_t two) {
 
 		// For now, this function only supports comparing non-matched types if both types are strings.
 		else {
-			log_pedantic("Invalid multi-type comparison.");
+			mclog_pedantic("Invalid multi-type comparison.");
 		}
 
 	}
@@ -764,7 +764,7 @@ int32_t cmp_mt_mt(multi_t one, multi_t two) {
 				break;
 
 			default:
-				log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The cmp_mt_mt function was called on an unsupported data type.");
+				mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The cmp_mt_mt function was called on an unsupported data type.");
 				result = false;
 				break;
 		}

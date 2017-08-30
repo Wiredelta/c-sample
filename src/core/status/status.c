@@ -54,7 +54,7 @@ void status_signal(void) {
 	rwlock_lock_write(&status_lock);
 	status_level = -1;
 	rwlock_unlock(&status_lock);
-	log_pedantic("Status updated. { status = -1 }");
+	mclog_pedantic("Status updated. { status = -1 }");
 	pthread_exit(NULL);
 }
 

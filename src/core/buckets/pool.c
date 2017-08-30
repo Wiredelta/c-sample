@@ -36,18 +36,18 @@ pool_t * pool_alloc(uint32_t count, uint32_t timeout) {
 	size_t pool_size = sizeof(pool_t) + (sizeof(status_t) * count) + (sizeof(void *) * count);
 
 	if (count > MAGMA_CORE_POOL_OBJECTS_LIMIT) {
-		log_info("%u exceeds the maximum number of pool objects allowed.", count);
+		mclog_info("%u exceeds the maximum number of pool objects allowed.", count);
 		return NULL;
 	}
 
 	if (timeout > MAGMA_CORE_POOL_TIMEOUT_LIMIT) {
-		log_info("%u exceeds the timeout maximum allowable timeout for a pool.", timeout);
+		mclog_info("%u exceeds the timeout maximum allowable timeout for a pool.", timeout);
 		return NULL;
 	}
 
 	// Allocate enough memory for the pool structure, plus the boolean list and object array.
 	if (!(pool = mm_alloc(pool_size))) {
-		log_info("Unable to allocate %zu bytes for a pool structure.", pool_size);
+		mclog_info("Unable to allocate %zu bytes for a pool structure.", pool_size);
 		return NULL;
 	}
 
@@ -59,13 +59,13 @@ pool_t * pool_alloc(uint32_t count, uint32_t timeout) {
 	pool->objects = (void *)((char *)pool + sizeof(pool_t) + ((sizeof(status_t) * count)));
 
 	if (sem_init(&(pool->available), 0, count)) {
-		log_info("Unable to initialize the pool semaphore.");
+		mclog_info("Unable to initialize the pool semaphore.");
 		mm_free(pool);
 		return NULL;
 	}
 
 	if (mutex_init(&(pool->lock), NULL)) {
-		log_info("Unable to initialize the pool mutex.");
+		mclog_info("Unable to initialize the pool mutex.");
 		sem_destroy(&(pool->available));
 		mm_free(pool);
 		return NULL;
@@ -139,11 +139,11 @@ uint64_t pool_get_failures(pool_t *pool) {
 status_t pool_get_status(pool_t *pool, uint32_t item) {
 
 	if (!pool) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return PL_ERROR;
 	}
 
-	log_check(*(pool->status + item) != PL_AVAILABLE && *(pool->status + item) != PL_RESERVED);
+	mclog_check(*(pool->status + item) != PL_AVAILABLE && *(pool->status + item) != PL_RESERVED);
 
 	return *(pool->status + item);
 }
@@ -159,11 +159,11 @@ status_t pool_get_status(pool_t *pool, uint32_t item) {
 status_t pool_set_status(pool_t *pool, uint32_t item, status_t status) {
 
 	if (!pool) {
-		log_pedantic("A NULL pointer was passed in.");
+		mclog_pedantic("A NULL pointer was passed in.");
 		return PL_ERROR;
 	}
 
-	log_check(status != PL_AVAILABLE && status != PL_RESERVED);
+	mclog_check(status != PL_AVAILABLE && status != PL_RESERVED);
 
 	return *(pool->status + item) = status;
 }
@@ -248,7 +248,7 @@ void * pool_get_obj(pool_t *pool, uint32_t item) {
 	mutex_lock(&(pool->lock));
 	if (item >= pool_get_count(pool)) {
 		mutex_unlock(&(pool->lock));
-		log_pedantic("The item number provided (%u) is outside the valid range.", item);
+		mclog_pedantic("The item number provided (%u) is outside the valid range.", item);
 		return NULL;
 	}
 	mutex_unlock(&(pool->lock));
@@ -274,7 +274,7 @@ void * pool_set_obj(pool_t *pool, uint32_t item, void *object) {
 	mutex_lock(&(pool->lock));
 	if (item >= pool_get_count(pool)) {
 		mutex_unlock(&(pool->lock));
-		log_pedantic("The item number provided (%u) is outside the valid range.", item);
+		mclog_pedantic("The item number provided (%u) is outside the valid range.", item);
 		return NULL;
 	}
 	mutex_unlock(&(pool->lock));

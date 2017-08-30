@@ -38,7 +38,7 @@ stringer_t * upper_st(stringer_t *s) {
 	uchr_t *ptr;
 
 	if (st_empty_out(s, &ptr, &len)) {
-		log_pedantic("Passed in a NULL pointer or zero length string.");
+		mclog_pedantic("Passed in a NULL pointer or zero length string.");
 		return NULL;
 	}
 
@@ -61,7 +61,7 @@ stringer_t * lower_st(stringer_t *s) {
 	uchr_t *ptr;
 
 	if (st_empty_out(s, &ptr, &len)) {
-		log_pedantic("Passed in a NULL pointer or zero length string.");
+		mclog_pedantic("Passed in a NULL pointer or zero length string.");
 		return NULL;
 	}
 

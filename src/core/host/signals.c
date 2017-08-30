@@ -17,7 +17,7 @@
 chr_t * signal_name(int signal, char *buffer, size_t length) {
 
 	if (!buffer || !length) {
-		log_pedantic("Invalid output buffer supplied.");
+		mclog_pedantic("Invalid output buffer supplied.");
 	}
 	else if (signal < SIGUNUSED) {
 		snprintf(buffer, length, "%s", sys_siglist[signal]);
@@ -32,7 +32,7 @@ chr_t * signal_name(int signal, char *buffer, size_t length) {
 		snprintf(buffer, length, "SIGUNUSED");
 	}
 	else {
-		log_pedantic("Asked to identify a signal outside legal range. { signal = %i / nsig = %i / name = UNKNOWN }", signal, SIGRTMIN);
+		mclog_pedantic("Asked to identify a signal outside legal range. { signal = %i / nsig = %i / name = UNKNOWN }", signal, SIGRTMIN);
 		snprintf(buffer, length, "UNKNOWN");
 	}
 
@@ -134,7 +134,7 @@ chr_t * signal_name(int signal, char *buffer, size_t length) {
 		snprintf(buffer, length, "%s", "SIGSYS");
 		break;
 	default:
-		log_pedantic("Asked to name an unrecognized signal. { signal = %i / name = UNKNOWN }", signal);
+		mclog_pedantic("Asked to name an unrecognized signal. { signal = %i / name = UNKNOWN }", signal);
 		snprintf(buffer, length, "UNKNOWN");
 		break;
 	}

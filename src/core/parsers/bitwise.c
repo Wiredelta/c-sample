@@ -29,29 +29,29 @@ stringer_t * st_bitwise(stringer_t *a, stringer_t *b, stringer_t *output, uchr_t
 	uchr_t *data, *in_a, *in_b;
 
 	if (st_empty(a) || st_empty(b)) {
-		log_pedantic("At least one of the input strings is NULL or empty.");
+		mclog_pedantic("At least one of the input strings is NULL or empty.");
 		return NULL;
 	}
 	else if ((olen = st_length_get(a)) != st_length_get(b)) {
-		log_pedantic("Input strings must be of equal length for a bitwise combination to work.");
+		mclog_pedantic("Input strings must be of equal length for a bitwise combination to work.");
 		return NULL;
 	}
 	else if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding a result.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding a result.");
 		return NULL;
 	}
 	else if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < olen) || (!st_valid_avail(opts) && st_length_get(output) < olen))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 			st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), olen);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(olen))) {
-		log_pedantic("The output buffer allocation failed. {requested = %zu}", olen);
+		mclog_pedantic("The output buffer allocation failed. {requested = %zu}", olen);
 		return NULL;
 	}
 
 	if (!(data = st_data_get(result)) || !(in_a = st_data_get(a)) || !(in_b = st_data_get(b))) {
-		log_pedantic("Could not retrieve a pointer to the stringer data.");
+		mclog_pedantic("Could not retrieve a pointer to the stringer data.");
 		if (!output) st_free(result);
 		return NULL;
 	}
@@ -80,25 +80,25 @@ stringer_t * st_not(stringer_t *s, stringer_t *output) {
 	stringer_t *result = NULL;
 
 	if (st_empty(s) || (!(olen = st_length_get(s)))) {
-		log_pedantic("Input stringer is empty or NULL was passed in.");
+		mclog_pedantic("Input stringer is empty or NULL was passed in.");
 		return NULL;
 	}
 	else if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding a result.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding a result.");
 		return NULL;
 	}
 	else if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < olen) || (!st_valid_avail(opts) && st_length_get(output) < olen))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 			st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), olen);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(olen))) {
-		log_pedantic("The output buffer allocation failed. {requested = %zu}", olen);
+		mclog_pedantic("The output buffer allocation failed. {requested = %zu}", olen);
 		return NULL;
 	}
 
 	if (!(data = st_data_get(result)) || !(in_s = st_data_get(s))) {
-		log_pedantic("Could not retrieve a pointer to the stringer data.");
+		mclog_pedantic("Could not retrieve a pointer to the stringer data.");
 		if (!output) st_free(result);
 		return NULL;
 	}

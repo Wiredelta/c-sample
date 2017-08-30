@@ -27,11 +27,11 @@ bool_t float_conv(stringer_t *s, float_t *number) {
 	output = strtof(st_char_get(s), &end);
 
 	if (st_char_get(s) == end) {
-		log_pedantic("The provided string could not be converted to a float. {s = %.*s}", st_length_int(s), st_char_get(s));
+		mclog_pedantic("The provided string could not be converted to a float. {s = %.*s}", st_length_int(s), st_char_get(s));
 		return false;
 	}
 	else if (output == HUGE_VALF && errno == ERANGE) {
-		log_pedantic("Numeric overflow. {s = %.*s}", st_length_int(s), st_char_get(s));
+		mclog_pedantic("Numeric overflow. {s = %.*s}", st_length_int(s), st_char_get(s));
 		return false;
 	}
 
@@ -59,11 +59,11 @@ bool_t double_conv(stringer_t *s, double_t *number) {
 	output = strtod(st_char_get(s), &end);
 
 	if (st_char_get(s) == end) {
-		log_pedantic("The provided string could not be converted to a double. {s = %.*s}", st_length_int(s), st_char_get(s));
+		mclog_pedantic("The provided string could not be converted to a double. {s = %.*s}", st_length_int(s), st_char_get(s));
 		return false;
 	}
 	else if (output == HUGE_VALF && errno == ERANGE) {
-		log_pedantic("Numeric overflow. {s = %.*s}", st_length_int(s), st_char_get(s));
+		mclog_pedantic("Numeric overflow. {s = %.*s}", st_length_int(s), st_char_get(s));
 		return false;
 	}
 
@@ -109,7 +109,7 @@ bool_t uint64_conv_bl(void *block, size_t length, uint64_t *number) {
 	uint64_t add = 1, before;
 
 	if (!block || !length || !number) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return false;
 	}
 
@@ -120,7 +120,7 @@ bool_t uint64_conv_bl(void *block, size_t length, uint64_t *number) {
 	for (size_t i = 0; i < length; i++) {
 
 		if (*data < '0' || *data > '9') {
-			log_pedantic("Non numeric data found. {%c}", *data);
+			mclog_pedantic("Non numeric data found. {%c}", *data);
 			return false;
 		}
 
@@ -128,7 +128,7 @@ bool_t uint64_conv_bl(void *block, size_t length, uint64_t *number) {
 		*number += (*data-- - '0') * add;
 
 		if (*number < before) {
-			log_pedantic("Numeric overflow.");
+			mclog_pedantic("Numeric overflow.");
 			return false;
 		}
 
@@ -136,7 +136,7 @@ bool_t uint64_conv_bl(void *block, size_t length, uint64_t *number) {
 		add *= 10;
 
 		if (add < before) {
-			log_pedantic("Numeric overflow.");
+			mclog_pedantic("Numeric overflow.");
 			return false;
 		}
 	}
@@ -191,7 +191,7 @@ bool_t uint32_conv_bl(void *block, size_t length, uint32_t *number) {
 	uint32_t add = 1, before;
 
 	if (!block || !length || !number) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return false;
 	}
 
@@ -202,7 +202,7 @@ bool_t uint32_conv_bl(void *block, size_t length, uint32_t *number) {
 	for (size_t i = 0; i < length; i++) {
 
 		if (*data < '0' || *data > '9') {
-			log_pedantic("Non numeric data found. {%c}", *data);
+			mclog_pedantic("Non numeric data found. {%c}", *data);
 			return false;
 		}
 
@@ -210,7 +210,7 @@ bool_t uint32_conv_bl(void *block, size_t length, uint32_t *number) {
 		*number += (*data-- - '0') * add;
 
 		if (*number < before) {
-			log_pedantic("Numeric overflow.");
+			mclog_pedantic("Numeric overflow.");
 			return false;
 		}
 
@@ -218,7 +218,7 @@ bool_t uint32_conv_bl(void *block, size_t length, uint32_t *number) {
 		add *= 10;
 
 		if (add < before) {
-			log_pedantic("Numeric overflow.");
+			mclog_pedantic("Numeric overflow.");
 			return false;
 		}
 	}
@@ -262,7 +262,7 @@ bool_t uint16_conv_bl(void *block, size_t length, uint16_t *number) {
 	uint16_t add = 1, before;
 
 	if (!block || !length || !number) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return false;
 	}
 
@@ -273,7 +273,7 @@ bool_t uint16_conv_bl(void *block, size_t length, uint16_t *number) {
 	for (size_t i = 0; i < length; i++) {
 
 		if (*data < '0' || *data > '9') {
-			log_pedantic("Non numeric data found. {%c}", *data);
+			mclog_pedantic("Non numeric data found. {%c}", *data);
 			return false;
 		}
 
@@ -281,7 +281,7 @@ bool_t uint16_conv_bl(void *block, size_t length, uint16_t *number) {
 		*number += (*data-- - '0') * add;
 
 		if (*number < before) {
-			log_pedantic("Numeric overflow.");
+			mclog_pedantic("Numeric overflow.");
 			return false;
 		}
 
@@ -289,7 +289,7 @@ bool_t uint16_conv_bl(void *block, size_t length, uint16_t *number) {
 		add *= 10;
 
 		if (add < before) {
-			log_pedantic("Numeric overflow.");
+			mclog_pedantic("Numeric overflow.");
 			return false;
 		}
 	}
@@ -333,7 +333,7 @@ bool_t uint8_conv_bl(void *block, size_t length, uint8_t *number) {
 	uint8_t add = 1, before;
 
 	if (!block || !length || !number) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return false;
 	}
 
@@ -344,7 +344,7 @@ bool_t uint8_conv_bl(void *block, size_t length, uint8_t *number) {
 	for (size_t i = 0; i < length; i++) {
 
 		if (*data < '0' || *data > '9') {
-			log_pedantic("Non numeric data found. {%c}", *data);
+			mclog_pedantic("Non numeric data found. {%c}", *data);
 			return false;
 		}
 
@@ -352,7 +352,7 @@ bool_t uint8_conv_bl(void *block, size_t length, uint8_t *number) {
 		*number += (*data-- - '0') * add;
 
 		if (*number < before) {
-			log_pedantic("Numeric overflow.");
+			mclog_pedantic("Numeric overflow.");
 			return false;
 		}
 
@@ -360,7 +360,7 @@ bool_t uint8_conv_bl(void *block, size_t length, uint8_t *number) {
 		add *= 10;
 
 		if (add < before) {
-			log_pedantic("Numeric overflow.");
+			mclog_pedantic("Numeric overflow.");
 			return false;
 		}
 	}
@@ -404,7 +404,7 @@ bool_t int64_conv_bl(void *block, size_t length, int64_t *number) {
 	int64_t add = 1, before;
 
 	if (!block || !length || !number) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return false;
 	}
 
@@ -421,7 +421,7 @@ bool_t int64_conv_bl(void *block, size_t length, int64_t *number) {
 			}
 		}
 		else if (*data < '0' || *data > '9') {
-			log_pedantic("Non numeric data found. {%c}", *data);
+			mclog_pedantic("Non numeric data found. {%c}", *data);
 			return false;
 		}
 		else {
@@ -430,7 +430,7 @@ bool_t int64_conv_bl(void *block, size_t length, int64_t *number) {
 			*number += (*data-- - '0') * add;
 
 			if (*number < before) {
-				log_pedantic("Numeric overflow.");
+				mclog_pedantic("Numeric overflow.");
 				return false;
 			}
 
@@ -438,7 +438,7 @@ bool_t int64_conv_bl(void *block, size_t length, int64_t *number) {
 			add *= 10;
 
 			if (add < before) {
-				log_pedantic("Numeric overflow.");
+				mclog_pedantic("Numeric overflow.");
 				return false;
 			}
 		}
@@ -483,7 +483,7 @@ bool_t int32_conv_bl(void *block, size_t length, int32_t *number) {
 	int32_t add = 1, before;
 
 	if (!block || !length || !number) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return false;
 	}
 
@@ -500,7 +500,7 @@ bool_t int32_conv_bl(void *block, size_t length, int32_t *number) {
 			}
 		}
 		else if (*data < '0' || *data > '9') {
-			log_pedantic("Non numeric data found. {%c}", *data);
+			mclog_pedantic("Non numeric data found. {%c}", *data);
 			return false;
 		}
 		else {
@@ -509,7 +509,7 @@ bool_t int32_conv_bl(void *block, size_t length, int32_t *number) {
 			*number += (*data-- - '0') * add;
 
 			if (*number < before) {
-				log_pedantic("Numeric overflow.");
+				mclog_pedantic("Numeric overflow.");
 				return false;
 			}
 
@@ -517,7 +517,7 @@ bool_t int32_conv_bl(void *block, size_t length, int32_t *number) {
 			add *= 10;
 
 			if (add < before) {
-				log_pedantic("Numeric overflow.");
+				mclog_pedantic("Numeric overflow.");
 				return false;
 			}
 		}
@@ -562,7 +562,7 @@ bool_t int16_conv_bl(void *block, size_t length, int16_t *number) {
 	int16_t add = 1, before;
 
 	if (!block || !length || !number) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return false;
 	}
 
@@ -579,7 +579,7 @@ bool_t int16_conv_bl(void *block, size_t length, int16_t *number) {
 			}
 		}
 		else if (*data < '0' || *data > '9') {
-			log_pedantic("Non numeric data found. {%c}", *data);
+			mclog_pedantic("Non numeric data found. {%c}", *data);
 			return false;
 		}
 		else {
@@ -588,7 +588,7 @@ bool_t int16_conv_bl(void *block, size_t length, int16_t *number) {
 			*number += (*data-- - '0') * add;
 
 			if (*number < before) {
-				log_pedantic("Numeric overflow.");
+				mclog_pedantic("Numeric overflow.");
 				return false;
 			}
 
@@ -596,7 +596,7 @@ bool_t int16_conv_bl(void *block, size_t length, int16_t *number) {
 			add *= 10;
 
 			if (add < before) {
-				log_pedantic("Numeric overflow.");
+				mclog_pedantic("Numeric overflow.");
 				return false;
 			}
 		}
@@ -641,7 +641,7 @@ bool_t int8_conv_bl(void *block, size_t length, int8_t *number) {
 	int16_t add = 1, before;
 
 	if (!block || !length || !number) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return false;
 	}
 
@@ -658,7 +658,7 @@ bool_t int8_conv_bl(void *block, size_t length, int8_t *number) {
 			}
 		}
 		else if (*data < '0' || *data > '9') {
-			log_pedantic("Non numeric data found. {%c}", *data);
+			mclog_pedantic("Non numeric data found. {%c}", *data);
 			return false;
 		}
 		else {
@@ -667,7 +667,7 @@ bool_t int8_conv_bl(void *block, size_t length, int8_t *number) {
 			*number += (*data-- - '0') * add;
 
 			if (*number < before) {
-				log_pedantic("Numeric overflow.");
+				mclog_pedantic("Numeric overflow.");
 				return false;
 			}
 
@@ -675,7 +675,7 @@ bool_t int8_conv_bl(void *block, size_t length, int8_t *number) {
 			add *= 10;
 
 			if (add < before) {
-				log_pedantic("Numeric overflow.");
+				mclog_pedantic("Numeric overflow.");
 				return false;
 			}
 		}
@@ -718,12 +718,12 @@ stringer_t * uint32_put_no(uint32_t val) {
 	stringer_t *result;
 
 	if(!(result = st_alloc(4))) {
-		log_pedantic("Failed to allocate stringer");
+		mclog_pedantic("Failed to allocate stringer");
 		return NULL;
 	}
 
 	if(!(data = st_data_get(result))) {
-		log_pedantic("Failed to retrieve data pointer from stringer");
+		mclog_pedantic("Failed to retrieve data pointer from stringer");
 		return NULL;
 	}
 
@@ -748,12 +748,12 @@ stringer_t * uint24_put_no(uint32_t val) {
 	stringer_t *result;
 
 	if(!(result = st_alloc(3))) {
-		log_pedantic("Failed to allocate stringer");
+		mclog_pedantic("Failed to allocate stringer");
 		return NULL;
 	}
 
 	if(!(data = st_data_get(result))) {
-		log_pedantic("Failed to retrieve data pointer from stringer");
+		mclog_pedantic("Failed to retrieve data pointer from stringer");
 		return NULL;
 	}
 
@@ -777,12 +777,12 @@ stringer_t * uint16_put_no(uint16_t val) {
 	stringer_t *result;
 
 	if(!(result = st_alloc(2))) {
-		log_pedantic("Failed to allocate stringer");
+		mclog_pedantic("Failed to allocate stringer");
 		return NULL;
 	}
 
 	if(!(data = st_data_get(result))) {
-		log_pedantic("Failed to retrieve data pointer from stringer");
+		mclog_pedantic("Failed to retrieve data pointer from stringer");
 		return NULL;
 	}
 
@@ -804,11 +804,11 @@ uint32_t uint32_get_no(stringer_t *s) {
 	uint32_t result = 0;
 
 	if(!s || st_empty(s) || st_length_get(s) < 4) {
-		log_pedantic("Empty or invalid stringer was passed.");
+		mclog_pedantic("Empty or invalid stringer was passed.");
 		return 0;
 	}
 	else if (!(data = st_data_get(s))) {
-		log_pedantic("No data buffer found in stringer.");
+		mclog_pedantic("No data buffer found in stringer.");
 	}
 
 	result |= (data[0] << 24);
@@ -830,11 +830,11 @@ uint32_t uint24_get_no(stringer_t *s) {
 	uint32_t result = 0;
 
 	if(!s || st_empty(s) || st_length_get(s) < 3) {
-		log_pedantic("Empty or invalid stringer was passed.");
+		mclog_pedantic("Empty or invalid stringer was passed.");
 		return 0;
 	}
 	else if (!(data = st_data_get(s))) {
-		log_pedantic("No data buffer found in stringer.");
+		mclog_pedantic("No data buffer found in stringer.");
 	}
 
 	result |= (data[0] << 16);
@@ -855,11 +855,11 @@ uint16_t uint16_get_no(stringer_t *s) {
 	uint16_t result = 0;
 
 	if(!s || st_empty(s) || st_length_get(s) < 2) {
-		log_pedantic("Empty or invalid stringer was passed.");
+		mclog_pedantic("Empty or invalid stringer was passed.");
 		return 0;
 	}
 	else if (!(data = st_data_get(s))) {
-		log_pedantic("No data buffer found in stringer.");
+		mclog_pedantic("No data buffer found in stringer.");
 	}
 
 	result |= (data[0] << 8);

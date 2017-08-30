@@ -19,11 +19,11 @@ placer_t bracket_extract_pl(void *block, size_t length) {
 	char *start, *data;
 
 	if (!block || !length) {
-		log_pedantic("A NULL parameter was passed in.");
+		mclog_pedantic("A NULL parameter was passed in.");
 		return pl_null();
 	}
 	else if (*((char *)block) != '[') {
-		log_pedantic("The provided string doesn't start with an open bracket.");
+		mclog_pedantic("The provided string doesn't start with an open bracket.");
 		return pl_null();
 	}
 

@@ -53,7 +53,7 @@ int ns_length_int(chr_t *s) {
 	size_t len = ns_length_get(s);
 
 	if (len > INT_MAX) {
-		log_pedantic("Requested length is greater than INT_MAX. {nuller.length = %zu}", len);
+		mclog_pedantic("Requested length is greater than INT_MAX. {nuller.length = %zu}", len);
 		return INT_MAX;
 	}
 
@@ -81,7 +81,7 @@ chr_t * ns_alloc(size_t len) {
 
 	// If no memory was allocated, discover that here.
 	else {
-		log_pedantic("Could not allocate %zu bytes.", len + 1);
+		mclog_pedantic("Could not allocate %zu bytes.", len + 1);
 	}
 
 	return result;
@@ -96,7 +96,7 @@ void ns_free(chr_t *s) {
 
 #ifdef MAGMA_PEDANTIC
 	if (s == NULL)
-		log_pedantic("Attempted to free a NULL pointer.");
+		mclog_pedantic("Attempted to free a NULL pointer.");
 #endif
 
 	if (s) mm_free(s);
@@ -138,12 +138,12 @@ chr_t * ns_dupe(chr_t *s) {
 	size_t length;
 
 	if (!s || (!(length = ns_length_get(s)))) {
-		log_pedantic("Cannot duplicate NULL or zero-length string.");
+		mclog_pedantic("Cannot duplicate NULL or zero-length string.");
 		return NULL;
 	}
 
 	if (!(result = mm_alloc(length + 1))) {
-		log_info("Was not able to allocate buffer for duplicate string.");
+		mclog_info("Was not able to allocate buffer for duplicate string.");
 		return NULL;
 	}
 
@@ -162,7 +162,7 @@ chr_t * ns_import(void *block, size_t len) {
 	chr_t *result;
 
 	if (!(result = mm_alloc(len + 1))) {
-		log_pedantic("Allocation of copied memory failed.");
+		mclog_pedantic("Allocation of copied memory failed.");
 		return NULL;
 	}
 
@@ -182,7 +182,7 @@ chr_t * ns_append(chr_t *s, chr_t *append) {
 	size_t alen, slen = 0;
 
 	if (!append || !(alen = ns_length_get(append))) {
-		log_pedantic("The append string appears to be empty.");
+		mclog_pedantic("The append string appears to be empty.");
 		return s;
 	}
 
@@ -214,7 +214,7 @@ chr_t * ns_append(chr_t *s, chr_t *append) {
 void ns_wipe(chr_t *s, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
-	if (!s) log_pedantic("Attempting to wipe a NULL string pointer.");
+	if (!s) mclog_pedantic("Attempting to wipe a NULL string pointer.");
 #endif
 
 	if (s && len) mm_set(s, 0, len);

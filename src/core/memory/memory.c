@@ -108,7 +108,7 @@ void * mm_wipe(void *block, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!block) {
-		log_pedantic("Attempting to wipe a NULL block pointer.");
+		mclog_pedantic("Attempting to wipe a NULL block pointer.");
 	}
 #endif
 
@@ -129,10 +129,10 @@ void mm_free(void *block) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!block) {
-		log_pedantic("Attempted to free a NULL pointer.");
+		mclog_pedantic("Attempted to free a NULL pointer.");
 	}
 	else if (mm_sec_secured(block)) {
-		log_pedantic("Attempting to free a block of memory inside the secure address range.");
+		mclog_pedantic("Attempting to free a block of memory inside the secure address range.");
 	}
 #endif
 
@@ -155,10 +155,10 @@ void * mm_dupe(void *block, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!block) {
-		log_pedantic("Attempting to dupe a NULL block pointer.");
+		mclog_pedantic("Attempting to dupe a NULL block pointer.");
 	}
 	else if (!len) {
-		log_pedantic("Attempting to dupe a zero length memory block.");
+		mclog_pedantic("Attempting to dupe a zero length memory block.");
 	}
 #endif
 
@@ -183,14 +183,14 @@ void * mm_alloc(size_t len) {
 	void *result;
 
 	if (!len) {
-		log_pedantic("Attempted to allocate a zero length string.");
+		mclog_pedantic("Attempted to allocate a zero length string.");
 		return NULL;
 	}
 	else if ((result = malloc(len))) {
 		mm_set(result, 0, len);
 	}
 	else {
-		log_pedantic("Unable to allocate a block of %zu bytes.", len);
+		mclog_pedantic("Unable to allocate a block of %zu bytes.", len);
 	}
 
 	return result;

@@ -66,12 +66,12 @@ stringer_t * time_print_local(stringer_t *s, chr_t *format, time_t moment) {
 	mm_wipe(&localtime, sizeof(struct tm));
 
 	if (!s || (moment = time(NULL)) == ((time_t) -1) || !localtime_r(&moment, &localtime)) {
-		log_pedantic("Could not determine the proper time.");
+		mclog_pedantic("Could not determine the proper time.");
 		return NULL;
 	}
 
 	else if ((len = strftime(st_char_get(s), st_avail_get(s), format, &localtime)) <= 0) {
-		log_pedantic("Could not build the date string.");
+		mclog_pedantic("Could not build the date string.");
 		return NULL;
 	}
 
@@ -97,12 +97,12 @@ stringer_t * time_print_gmt(stringer_t *s, chr_t *format, time_t moment) {
 	mm_wipe(&gmt, sizeof(struct tm));
 
 	if (!s || !gmtime_r(&moment, &gmt)) {
-		log_pedantic("Could not determine the proper time.");
+		mclog_pedantic("Could not determine the proper time.");
 		return NULL;
 	}
 
 	else if ((len = strftime(st_char_get(s), st_avail_get(s), format, &gmt)) <= 0) {
-		log_pedantic("Could not build the date string.");
+		mclog_pedantic("Could not build the date string.");
 		return NULL;
 	}
 

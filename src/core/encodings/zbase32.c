@@ -22,12 +22,12 @@ stringer_t * zbase32_encode(stringer_t *s) {
 
 	// Check the input and setup the output buffer.
 	if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for encoding.");
+		mclog_pedantic("An empty string was passed in for encoding.");
 		return NULL;
 	}
 
 	if (!(output = st_alloc(((len * 8) + 4) / 5))) {
-		log_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", ((len * 8) + 4) / 5);
+		mclog_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", ((len * 8) + 4) / 5);
 		return NULL;
 	}
 
@@ -70,12 +70,12 @@ stringer_t * zbase32_decode(stringer_t *s) {
 
 	// Check the input and setup the output buffer.
 	if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for decoding.");
+		mclog_pedantic("An empty string was passed in for decoding.");
 		return NULL;
 	}
 
 	if (!(output = st_alloc((len * 5) / 8))) {
-		log_pedantic("Could not allocate a buffer large enough to hold decoded result. {requested = %zu}", (len * 5) / 8);
+		mclog_pedantic("Could not allocate a buffer large enough to hold decoded result. {requested = %zu}", (len * 5) / 8);
 		return NULL;
 	}
 

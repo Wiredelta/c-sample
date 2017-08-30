@@ -20,13 +20,13 @@ int_t file_read(char *name, stringer_t *output) {
 	int_t fd, result;
 
 	if (!output) {
-		log_pedantic("File read operation performed with NULL output buffer.");
+		mclog_pedantic("File read operation performed with NULL output buffer.");
 		return -1;
 	}
 
 	// Open returns the new file descriptor, or -1 if an error occurred (in which case, errno is set appropriately).
 	if ((fd = open(name, O_RDONLY)) == -1) {
-		log_info("Could not open the file %s for reading. {errno = %i & strerror = %s}", name, errno, strerror_r(errno, MEMORYBUF(1024), 1024));
+		mclog_info("Could not open the file %s for reading. {errno = %i & strerror = %s}", name, errno, strerror_r(errno, MEMORYBUF(1024), 1024));
 		return -1;
 	}
 
@@ -36,7 +36,7 @@ int_t file_read(char *name, stringer_t *output) {
 		st_length_set(output, result);
 	}
 	else {
-		log_info("Could not read the file %s. {errno = %i & strerror = %s}", name, errno, strerror_r(errno, MEMORYBUF(1024), 1024));
+		mclog_info("Could not read the file %s. {errno = %i & strerror = %s}", name, errno, strerror_r(errno, MEMORYBUF(1024), 1024));
 	}
 
 	close(fd);
@@ -57,19 +57,19 @@ stringer_t * file_load(char *name) {
 
 	// Open returns the new file descriptor, or -1 if an error occurred (in which case, errno is set appropriately).
 	if ((fd = open(name, O_RDONLY)) == -1) {
-		log_info("Could not open the file %s for reading. {errno = %i & strerror = %s}", name, errno,
+		mclog_info("Could not open the file %s for reading. {errno = %i & strerror = %s}", name, errno,
 				(strerror_r(errno, estring, 1024) == 0 ? estring : "Unknown error"));
 		return NULL;
 	}
 	// On success, fstat returns zero.  On error, -1 is returned, and errno is set appropriately.
 	else if (fstat(fd, &info) == -1) {
-		log_info("Could not fstat the file %s. {errno = %i & strerror = %s}", name, errno,
+		mclog_info("Could not fstat the file %s. {errno = %i & strerror = %s}", name, errno,
 				(strerror_r(errno, estring, 1024) == 0 ? estring : "Unknown error"));
 		close(fd);
 		return NULL;
 	}
 	else if ((result = st_alloc(info.st_size)) == NULL) {
-		log_info("Could not create a buffer big enough to hold the file %s.", name);
+		mclog_info("Could not create a buffer big enough to hold the file %s.", name);
 		close(fd);
 		return NULL;
 
@@ -77,7 +77,7 @@ stringer_t * file_load(char *name) {
 	// On success, read returns the number of bytes read (zero indicates end of file), and the file position is
 	// advanced by this number. On error, -1 is returned, and errno is set appropriately.
 	else if (read(fd, st_data_get(result), st_avail_get(result)) != info.st_size) {
-		log_info("Could not read the entire file %s. {errno = %i & strerror = %s}", name, errno,
+		mclog_info("Could not read the entire file %s. {errno = %i & strerror = %s}", name, errno,
 				(strerror_r(errno, estring, 1024) == 0 ? estring : "Unknown error"));
 		close(fd);
 		return NULL;
@@ -101,7 +101,7 @@ int_t get_temp_file_handle(chr_t *pdir, stringer_t **tmpname) {
 	stringer_t *opath, *path, *sp = NULL;
 
 	if (!pdir && !(sp = spool_path(MAGMA_SPOOL_BASE))) {
-		log_pedantic("Failed to retrieve spool directory to create temp file.");
+		mclog_pedantic("Failed to retrieve spool directory to create temp file.");
 		return -1;
 	}
 
@@ -113,13 +113,13 @@ int_t get_temp_file_handle(chr_t *pdir, stringer_t **tmpname) {
 	}
 
 	if (!opath) {
-		log_pedantic("Failed to create temp file with invalid parent directory.");
+		mclog_pedantic("Failed to create temp file with invalid parent directory.");
 		return -1;
 	}
 
 	// We have to do this because spool_path() doesn't return the type of string we need for appending.
 	if (!(path = st_dupe_opts(MANAGED_T | JOINTED | HEAP, opath))) {
-		log_pedantic("Could not allocate a buffer for temp file name.");
+		mclog_pedantic("Could not allocate a buffer for temp file name.");
 		st_free(opath);
 		return -1;
 	}
@@ -127,13 +127,13 @@ int_t get_temp_file_handle(chr_t *pdir, stringer_t **tmpname) {
 	st_free(opath);
 
 	if (!(path = st_append(path, CONSTANT("/XXXXXX")))) {
-		log_pedantic("Error allocating space for temporary file name.");
+		mclog_pedantic("Error allocating space for temporary file name.");
 		st_free(path);
 		return -1;
 	}
 
 	if ((result = mkstemp(st_char_get(path))) < 0) {
-		log_pedantic("Failed to acquire temporary file handle with mkstemp. { %s }.", st_char_get(path));
+		mclog_pedantic("Failed to acquire temporary file handle with mkstemp. { %s }.", st_char_get(path));
 		st_free(path);
 		return -1;
 	}

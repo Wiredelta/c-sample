@@ -1,4 +1,3 @@
-
 /**
  * @file /magma/engine/log/log.c
  *

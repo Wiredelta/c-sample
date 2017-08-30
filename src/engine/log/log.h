@@ -10,32 +10,6 @@
 #ifndef MAGMA_CORE_LOG_H
 #define MAGMA_CORE_LOG_H
 
-// Options used to control the behavior of the log subsystem.
-typedef enum {
-	M_LOG_PEDANTIC = 1,
-	M_LOG_INFO,
-	M_LOG_ERROR,
-	M_LOG_CRITICAL,
-	M_LOG_TIME,
-	M_LOG_FILE,
-	M_LOG_LINE,
-	M_LOG_FUNCTION,
-	M_LOG_STACK_TRACE,
-	M_LOG_PEDANTIC_DISABLE,
-	M_LOG_INFO_DISABLE,
-	M_LOG_ERROR_DISABLE,
-	M_LOG_CRITICAL_DISABLE,
-	M_LOG_LINE_FEED_DISABLE,
-	M_LOG_TIME_DISABLE,
-	M_LOG_FILE_DISABLE,
-	M_LOG_LINE_DISABLE,
-	M_LOG_FUNCTION_DISABLE,
-	M_LOG_STACK_TRACE_DISABLE
-} M_LOG_OPTIONS;
-
-// All of the different log levels.
-#define MAGMA_LOG_LEVELS (M_LOG_PEDANTIC | M_LOG_INFO | M_LOG_ERROR | M_LOG_CRITICAL)
-
 // log.c
 int_t    print_backtrace();
 void     log_internal(const char *file, const char *function, const int line, M_LOG_OPTIONS options, const char *format, ...) __attribute__((format (printf, 5, 6)));

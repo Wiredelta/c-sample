@@ -18,7 +18,7 @@ int tkey_init(pthread_key_t *key, void(*destructor)(void*)) {
 
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_key_create(key, destructor);
-	if (result) log_pedantic("Could not create thread the specific storage key. {pthread_key_create = %i}", result);
+	if (result) mclog_pedantic("Could not create thread the specific storage key. {pthread_key_create = %i}", result);
 	return result;
 #else
 	return pthread_key_create(key, destructor);
@@ -47,7 +47,7 @@ int tkey_set(pthread_key_t key, void *value) {
 
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_setspecific(key, value);
-	if (result) log_pedantic("Could not update the thread specific storage key. {pthread_setspecific = %i}", result);
+	if (result) mclog_pedantic("Could not update the thread specific storage key. {pthread_setspecific = %i}", result);
 	return result;
 #else
 	return pthread_setspecific(key, value);

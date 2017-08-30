@@ -45,7 +45,7 @@ uint32_t hashed_bucket(uint32_t buckets, multi_t key) {
 		if ((result = mt_get_number(key)) < buckets) {
 
 			// If my math is right, the bit count should never exceed the value of result. That also means the expression should never return a negative number.
-			log_check((count = bitwise_count(result)) > result);
+			mclog_check((count = bitwise_count(result)) > result);
 
 			result = (((count = bitwise_count(result)) % 2) ? result + count : result - count);
 			result = (buckets <= result ? (buckets - 1) : result);
@@ -92,7 +92,7 @@ hashed_bucket_t * hashed_bucket_get_ptr(hashed_index_t *hashed, uint32_t num) {
 
 #ifdef MAGMA_PEDANTIC
 	else {
-		log_pedantic("Invalid hash bucket requested.");
+		mclog_pedantic("Invalid hash bucket requested.");
 	}
 #endif
 
@@ -108,7 +108,7 @@ void hashed_bucket_set_ptr(hashed_index_t *hashed, uint32_t num, hashed_bucket_t
 
 #ifdef MAGMA_PEDANTIC
 	else {
-		log_pedantic("Invalid hash bucket requested.");
+		mclog_pedantic("Invalid hash bucket requested.");
 	}
 #endif
 
@@ -408,7 +408,7 @@ void * hashed_cursor_alloc(inx_t *inx) {
 	hashed_cursor_t *cursor;
 
 	if (!(cursor = mm_alloc(sizeof(hashed_cursor_t)))) {
-		log_pedantic("Failed to allocate %zu bytes for a hash index cursor.", sizeof(hashed_cursor_t));
+		mclog_pedantic("Failed to allocate %zu bytes for a hash index cursor.", sizeof(hashed_cursor_t));
 		return NULL;
 	}
 

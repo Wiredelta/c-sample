@@ -129,23 +129,23 @@ stringer_t * hex_encode_st(stringer_t *b, stringer_t *output) {
 	stringer_t *result = NULL;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 	else if (st_empty_out(b, &p, &len)) {
-		log_pedantic("The input block does not appear to hold any data ready for encoding. {%slen = %zu}", p ? "" : "p = NULL / ", len);
+		mclog_pedantic("The input block does not appear to hold any data ready for encoding. {%slen = %zu}", p ? "" : "p = NULL / ", len);
 		return NULL;
 	}
 
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < (len * 2)) ||
 			(!st_valid_avail(opts) && st_length_get(output) < (len * 2)))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 				st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), len * 2);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(len * 2))) {
-		log_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len * 2);
+		mclog_pedantic("The output buffer memory allocation request failed. {requested = %zu}", len * 2);
 		return NULL;
 	}
 
@@ -185,7 +185,7 @@ stringer_t * hex_encode_st_debug(stringer_t *input, size_t maxlen) {
 	total = (maxlen * 4) + 16;
 
 	if (!(result = st_alloc (total))) {
-		log_error("Unable to allocate space for debug string.");
+		mclog_error("Unable to allocate space for debug string.");
 		return NULL;
 	}
 
@@ -255,7 +255,7 @@ byte_t hex_decode_chr(uchr_t a, uchr_t b) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!hex_valid_chr(a) || !hex_valid_chr(b)) {
-		log_pedantic("Invalid hex characters passed in for decoding. {a = %c / b = %c}", lower_chr(a), lower_chr(b));
+		mclog_pedantic("Invalid hex characters passed in for decoding. {a = %c / b = %c}", lower_chr(a), lower_chr(b));
 	}
 #endif
 
@@ -292,23 +292,23 @@ stringer_t * hex_decode_st(stringer_t *h, stringer_t *output) {
 	stringer_t *result = NULL;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 	else if (st_empty_out(h, &p, &len) || !(valid = hex_count_st(h))) {
-		log_pedantic("The input block does not appear to hold any data ready for decoding. {%slen = %zu}", p ? "" : "p = NULL / ", len);
+		mclog_pedantic("The input block does not appear to hold any data ready for decoding. {%slen = %zu}", p ? "" : "p = NULL / ", len);
 		return NULL;
 	}
 
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < (valid / 2)) ||
 			(!st_valid_avail(opts) && st_length_get(output) < (valid / 2)))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 				st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), valid / 2);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(valid / 2))) {
-		log_pedantic("The output buffer memory allocation request failed. {requested = %zu}", (valid / 2));
+		mclog_pedantic("The output buffer memory allocation request failed. {requested = %zu}", (valid / 2));
 		return NULL;
 	}
 
@@ -348,22 +348,22 @@ stringer_t * hex_encode_opts(stringer_t *input, uint32_t opts) {
 	stringer_t *result = NULL;
 
 	if(st_empty(input)) {
-		log_pedantic("Empty stringer was passed in.");
+		mclog_pedantic("Empty stringer was passed in.");
 		goto error;
 	}
 
 	if(!opts) {
-		log_pedantic("Invalid stringer options were passed in.");
+		mclog_pedantic("Invalid stringer options were passed in.");
 		goto error;
 	}
 
 	if(!(result = st_alloc_opts(opts, st_length_get(input) * 2))) {
-		log_error("Failed to allocate memory for hex-encoded output.");
+		mclog_error("Failed to allocate memory for hex-encoded output.");
 		goto error;
 	}
 
 	if(result != hex_encode_st(input, result)) {
-		log_error("Failed to encode data.");
+		mclog_error("Failed to encode data.");
 		goto cleanup_result;
 	}
 
@@ -386,23 +386,23 @@ stringer_t * hex_decode_opts(stringer_t *input, uint32_t opts) {
 	size_t insize;
 
 	if(st_empty(input)) {
-		log_pedantic("Empty stringer was passed in.");
+		mclog_pedantic("Empty stringer was passed in.");
 	}
 
 	if(!opts) {
-		log_pedantic("Invalid stringer options were passed in.");
+		mclog_pedantic("Invalid stringer options were passed in.");
 		goto error;
 	}
 
 	insize = st_length_get(input);
 
 	if(!(result = st_alloc_opts(opts, (insize % 2) ? ((insize + 1) / 2) : (insize / 2) ))) {
-		log_error("Failed to allocate memory for hex-encoded output.");
+		mclog_error("Failed to allocate memory for hex-encoded output.");
 		goto error;
 	}
 
 	if(result != hex_decode_st(input, result)) {
-		log_error("Failed to encode data.");
+		mclog_error("Failed to encode data.");
 		goto cleanup_result;
 	}
 

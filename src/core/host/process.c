@@ -29,7 +29,7 @@ pid_t process_find_pid(stringer_t *name) {
 	stringer_t *compare = MANAGEDBUF(1024);
 
 	if (!(dir = opendir(MAGMA_PROC_PATH))) {
-		log_pedantic("The system path could not be opened. { path = %s / %s }",
+		mclog_pedantic("The system path could not be opened. { path = %s / %s }",
 				MAGMA_PROC_PATH, strerror_r(errno, MEMORYBUF(1024), 1024));
 		return 0;
 	}
@@ -69,7 +69,7 @@ int_t process_kill(stringer_t *name, int_t signum, int_t wait) {
 	stringer_t *compare = MANAGEDBUF(1024);
 
 	if (!(dir = opendir(MAGMA_PROC_PATH))) {
-		log_pedantic("The system path could not be opened. { path = %s / %s }",
+		mclog_pedantic("The system path could not be opened. { path = %s / %s }",
 				MAGMA_PROC_PATH, strerror_r(errno, MEMORYBUF(1024), 1024));
 		return -2;
 	}
@@ -84,7 +84,7 @@ int_t process_kill(stringer_t *name, int_t signum, int_t wait) {
 				!st_cmp_cs_starts(st_swap(compare, '\0', ' '), name)) {
 
 				if ((ret = kill(pid, signum))) {
-					log_pedantic("The process could not be signaled. { signum = %i / %s }", signum, strerror_r(errno, MEMORYBUF(1024), 1024));
+					mclog_pedantic("The process could not be signaled. { signum = %i / %s }", signum, strerror_r(errno, MEMORYBUF(1024), 1024));
 					return -2;
 				}
 				else {
@@ -104,7 +104,7 @@ int_t process_kill(stringer_t *name, int_t signum, int_t wait) {
 	for (uint_t i = 0; i < wait && matches != exited; i++) {
 		for (uint_t j = 0; j < matches; j++) {
 			if (killed[j] != -1 && kill(killed[j], 0) && errno == ESRCH) {
-				log_pedantic("%.*s (%i) killed", st_length_int(name), st_char_get(name), killed[j]);
+				mclog_pedantic("%.*s (%i) killed", st_length_int(name), st_char_get(name), killed[j]);
 				killed[j] = -1;
 				exited++;
 			}
@@ -119,7 +119,7 @@ int_t process_kill(stringer_t *name, int_t signum, int_t wait) {
 	if (wait > 0 && exited != matches) {
 		for (uint_t j = 0; j < matches; j++) {
 			if (killed[j] != -1) {
-				log_pedantic("%.*s (%i) refused to die", st_length_int(name), st_char_get(name), killed[j]);
+				mclog_pedantic("%.*s (%i) refused to die", st_length_int(name), st_char_get(name), killed[j]);
 			}
 		}
 		return -1;

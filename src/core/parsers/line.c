@@ -20,7 +20,7 @@ placer_t line_pl_bl(char *block, size_t length, uint64_t number) {
 
 	// We can't search NULL pointers or empty blocks.
 	if (mm_empty(block, length)) {
-		log_pedantic("Passed an invalid parameter.");
+		mclog_pedantic("Passed an invalid parameter.");
 		return pl_null();
 	}
 

@@ -200,7 +200,7 @@ void mm_sec_free(void *block) {
 
 #ifdef MAGMA_PEDANTIC
 	if (!mm_sec_secured(block)) {
-		log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The secure memory system was asked to free an non-secure address.");
+		mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "The secure memory system was asked to free an non-secure address.");
 	}
 #endif
 
@@ -276,12 +276,12 @@ void * mm_sec_alloc(size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	else {
-		log_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "Secure memory allocation failed. {len = %zu}", len);
+		mclog_options(M_LOG_PEDANTIC | M_LOG_STACK_TRACE, "Secure memory allocation failed. {len = %zu}", len);
 		size_t total, bytes, items;
 		mm_sec_stats(&total, &bytes, &items);
-		log_pedantic("secmem usage: %lu/%lu bytes in %lu chunks\n",	bytes, total, items);
+		mclog_pedantic("secmem usage: %lu/%lu bytes in %lu chunks\n",	bytes, total, items);
 
-		//log_pedantic("Secure memory allocation failed. {len = %zu}", len);
+		//mclog_pedantic("Secure memory allocation failed. {len = %zu}", len);
 
 	}
 #endif
@@ -301,7 +301,7 @@ void * mm_sec_realloc(void *orig, size_t len) {
 
 	if (!secure.enabled || !secure.slab.data || !orig || !len) {
 #ifdef MAGMA_PEDANTIC
-		if (!len) log_pedantic("Secure reallocation request is for a zero length block! {len = %zu}", len);
+		if (!len) mclog_pedantic("Secure reallocation request is for a zero length block! {len = %zu}", len);
 #endif
 		return NULL;
 	}
@@ -361,13 +361,13 @@ bool_t mm_sec_start(void) {
 	secured_t *chunk;
 
 	if (!(secure.enabled = magma_core.secure.memory.enable)) {
-		log_pedantic("Secure memory management disabled.");
+		mclog_pedantic("Secure memory management disabled.");
 		return true;
 	}
 
 	// Ensure the page length is positive.
 	if ((alignment = magma_core.page_length) <= 0) {
-		log_pedantic("Invalid page size.");
+		mclog_pedantic("Invalid page size.");
 		return false;
 	}
 	// If the page length is smaller than MM_SEC_PAGE_ALIGNMENT_MIN bytes, replace it with an aligned value of at least MM_SEC_PAGE_ALIGNMENT_MIN.
@@ -377,7 +377,7 @@ bool_t mm_sec_start(void) {
 
 	// Ensure the default length for secure memory slabs is greater than zero and is aligned by the page table size.
 	if ((secure.slab.length = (magma_core.secure.memory.length + alignment - 1) & ~(alignment - 1)) < MM_SEC_POOL_LENGTH_MIN) {
-		log_pedantic("The secure memory pool size is too small. { length = %zu / min = %i }", secure.slab.length, MM_SEC_POOL_LENGTH_MIN);
+		mclog_pedantic("The secure memory pool size is too small. { length = %zu / min = %i }", secure.slab.length, MM_SEC_POOL_LENGTH_MIN);
 		return false;
 	}
 
@@ -386,14 +386,14 @@ bool_t mm_sec_start(void) {
 
 	// Request an anonymous memory mapping that is aligned according to the system page size. Were asking the kernel to lock returned block into memory.
 	if ((secure.slab.data_true = mmap64(NULL, secure.slab.length_true, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_LOCKED, -1, 0)) == MAP_FAILED) {
-		log_pedantic("Unable to memory map an anonymous file. { error = %s }", strerror_r(errno, MEMORYBUF(1024), 1024));
+		mclog_pedantic("Unable to memory map an anonymous file. { error = %s }", strerror_r(errno, MEMORYBUF(1024), 1024));
 		return false;
 	}
 
 	bndptr = secure.slab.data_true;
 
 	if (mprotect(bndptr, magma_core.page_length, PROT_NONE)) {
-		log_pedantic("Unable to set protections on lower secure memory boundary chunk.");
+		mclog_pedantic("Unable to set protections on lower secure memory boundary chunk.");
 		return false;
 	}
 
@@ -402,13 +402,13 @@ bool_t mm_sec_start(void) {
 	bndptr += secure.slab.length;
 
 	if (mprotect(bndptr, magma_core.page_length, PROT_NONE)) {
-		log_pedantic("Unable to set protections on upper secure memory boundary chunk.");
+		mclog_pedantic("Unable to set protections on upper secure memory boundary chunk.");
 		return false;
 	}
 
 	// We also request the address range assigned be locked into memory using the mlock call.
 	if (mlock(secure.slab.data, secure.slab.length)) {
-		log_pedantic("Unable to lock the address space reserved for sensitive data in memory.");
+		mclog_pedantic("Unable to lock the address space reserved for sensitive data in memory.");
 		// BUG: Need to add in calculations
 		munmap(secure.slab.data_true, secure.slab.length_true);
 		secure.slab.data = secure.slab.data_true = NULL;

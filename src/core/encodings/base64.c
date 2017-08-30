@@ -77,10 +77,10 @@ size_t base64_encoded_length_wrap(size_t length, size_t wrap, base64_wrap_t type
 	}
 #ifdef MAGMA_PEDANTIC
 	else if (!wrap && type != BASE64_LINE_WRAP_NONE) {
-		log_pedantic("The line wrap length is 0, indicating that line wrapping is disabled, but the end of line type was still set.");
+		mclog_pedantic("The line wrap length is 0, indicating that line wrapping is disabled, but the end of line type was still set.");
 	}
 	else if (wrap && type == BASE64_LINE_WRAP_NONE) {
-		log_pedantic("The line wrap length limiter is greater than 0, but the end of line type is none.");
+		mclog_pedantic("The line wrap length limiter is greater than 0, but the end of line type is none.");
 	}
 #endif
 
@@ -162,11 +162,11 @@ stringer_t * base64_encode(stringer_t *s, stringer_t *output) {
 	size_t len, new_len, written = 0,  cur_line = 0;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 	else if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for encoding.");
+		mclog_pedantic("An empty string was passed in for encoding.");
 		return NULL;
 	}
 
@@ -175,12 +175,12 @@ stringer_t * base64_encode(stringer_t *s, stringer_t *output) {
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < new_len) ||
 			(!st_valid_avail(opts) && st_length_get(output) < new_len))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 				st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), new_len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(new_len))) {
-		log_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
+		mclog_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
 		return NULL;
 	}
 
@@ -247,7 +247,7 @@ stringer_t * base64_encode(stringer_t *s, stringer_t *output) {
 			break;
 
 		default:
-			log_error("Switch statement did not execute correctly. This should never happen.");
+			mclog_error("Switch statement did not execute correctly. This should never happen.");
 			break;
 	}
 
@@ -277,11 +277,11 @@ stringer_t * base64_encode_wrap(stringer_t *s, size_t wrap, base64_wrap_t type, 
 	size_t len, new_len, written = 0,  cur_line = 0;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 	else if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for encoding.");
+		mclog_pedantic("An empty string was passed in for encoding.");
 		return NULL;
 	}
 
@@ -290,12 +290,12 @@ stringer_t * base64_encode_wrap(stringer_t *s, size_t wrap, base64_wrap_t type, 
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < new_len) ||
 			(!st_valid_avail(opts) && st_length_get(output) < new_len))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 				st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), new_len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(new_len))) {
-		log_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
+		mclog_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
 		return NULL;
 	}
 
@@ -353,7 +353,7 @@ stringer_t * base64_encode_wrap(stringer_t *s, size_t wrap, base64_wrap_t type, 
 				written += 4;
 				break;
 			default:
-				log_error("Switch statement did not execute correctly. This should never happen.");
+				mclog_error("Switch statement did not execute correctly. This should never happen.");
 				break;
 		}
 
@@ -393,7 +393,7 @@ stringer_t * base64_encode_wrap(stringer_t *s, size_t wrap, base64_wrap_t type, 
 
 #ifdef MAGMA_PEDANTIC
 	if (written != new_len) {
-		log_pedantic("The base64 encoded buffer length did not match the expected output length. { expected = %zu / actual = %zu }",
+		mclog_pedantic("The base64 encoded buffer length did not match the expected output length. { expected = %zu / actual = %zu }",
 			new_len, written);
 	}
 #endif
@@ -418,11 +418,11 @@ stringer_t * base64_encode_mod(stringer_t *s, stringer_t *output) {
 	int_t c1, c2, c3;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 	else if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for encoding.");
+		mclog_pedantic("An empty string was passed in for encoding.");
 		return NULL;
 	}
 
@@ -431,12 +431,12 @@ stringer_t * base64_encode_mod(stringer_t *s, stringer_t *output) {
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < new_len) ||
 			(!st_valid_avail(opts) && st_length_get(output) < new_len))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 				st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), new_len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(new_len))) {
-		log_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
+		mclog_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
 		return NULL;
 	}
 
@@ -500,14 +500,14 @@ stringer_t * base64_encode_opts(stringer_t *s, uint32_t opts, bool_t modified) {
 	stringer_t *result, *b64_ret;
 
 	if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for base64 encoding.");
+		mclog_pedantic("An empty string was passed in for base64 encoding.");
 		return NULL;
 	}
 
 	new_len = modified ? base64_encoded_length_mod(len) : base64_encoded_length(len);
 
 	if (!(result = st_alloc_opts(opts,new_len))) {
-		log_pedantic("Unable to allocate memory for base64 encoding output.");
+		mclog_pedantic("Unable to allocate memory for base64 encoding output.");
 		return NULL;
 	}
 
@@ -519,7 +519,7 @@ stringer_t * base64_encode_opts(stringer_t *s, uint32_t opts, bool_t modified) {
 	}
 
 	if (!b64_ret) {
-		log_pedantic("Unable to perform base64 encoding operation.");
+		mclog_pedantic("Unable to perform base64 encoding operation.");
 		st_free(result);
 		result = NULL;
 	}
@@ -542,11 +542,11 @@ stringer_t * base64_decode(stringer_t *s, stringer_t *output) {
 	int_t loop = 0, value = 0;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 	else if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for encoding.");
+		mclog_pedantic("An empty string was passed in for encoding.");
 		return NULL;
 	}
 
@@ -555,12 +555,12 @@ stringer_t * base64_decode(stringer_t *s, stringer_t *output) {
 	// Make sure the output buffer is large enough or if output was passed in as NULL we'll attempt the allocation of our own buffer.
 	if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < new_len) ||
 			(!st_valid_avail(opts) && st_length_get(output) < new_len))) {
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 				st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), new_len);
 		return NULL;
 	}
 	else if (!output && !(result = st_alloc(new_len))) {
-		log_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
+		mclog_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
 		return NULL;
 	}
 
@@ -603,7 +603,7 @@ stringer_t * base64_decode(stringer_t *s, stringer_t *output) {
 					break;
 
 				default:
-					log_pedantic("Base64 decoder logic failure. Unexpected loop state. {loop = %i}", loop);
+					mclog_pedantic("Base64 decoder logic failure. Unexpected loop state. {loop = %i}", loop);
 					loop = 0;
 					break;
 			}
@@ -642,11 +642,11 @@ stringer_t * base64_decode_mod(stringer_t *s, stringer_t *output) {
 	size_t len, new_len, written = 0;
 
 	if (output && !st_valid_destination((opts = *((uint32_t *)output)))) {
-		log_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
+		mclog_pedantic("An output string was supplied but it does not represent a buffer capable of holding the output.");
 		return NULL;
 	}
 	else if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for encoding.");
+		mclog_pedantic("An empty string was passed in for encoding.");
 		return NULL;
 	}
 
@@ -656,13 +656,13 @@ stringer_t * base64_decode_mod(stringer_t *s, stringer_t *output) {
 	if ((result = output) && ((st_valid_avail(opts) && st_avail_get(output) < new_len) ||
 			(!st_valid_avail(opts) && st_length_get(output) < new_len))) {
 
-		log_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
+		mclog_pedantic("The output buffer supplied is not large enough to hold the result. {avail = %zu / required = %zu}",
 				st_valid_avail(opts) ? st_avail_get(output) : st_length_get(output), new_len);
 		return NULL;
 
 	}
 	else if (!output && !(result = st_alloc(new_len))) {
-		log_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
+		mclog_pedantic("Could not allocate a buffer large enough to hold encoded result. {requested = %zu}", new_len);
 		return NULL;
 	}
 
@@ -705,7 +705,7 @@ stringer_t * base64_decode_mod(stringer_t *s, stringer_t *output) {
 					break;
 
 				default:
-					log_pedantic("Base64 decoder logic failure. Unexpected loop state. {loop = %i}", loop);
+					mclog_pedantic("Base64 decoder logic failure. Unexpected loop state. {loop = %i}", loop);
 					loop = 0;
 					break;
 			}
@@ -738,14 +738,14 @@ stringer_t * base64_decode_opts(stringer_t *s, uint32_t opts, bool_t modified) {
 	stringer_t *result, *b64_ret;
 
 	if (st_empty_out(s, &p, &len)) {
-		log_pedantic("An empty string was passed in for base64 decoding.");
+		mclog_pedantic("An empty string was passed in for base64 decoding.");
 		return NULL;
 	}
 
 	new_len = modified ? base64_decoded_length_mod(len) : base64_decoded_length(len);
 
 	if (!(result = st_alloc_opts(opts,new_len))) {
-		log_pedantic("Unable to allocate memory for base64 decoding output.");
+		mclog_pedantic("Unable to allocate memory for base64 decoding output.");
 		return NULL;
 	}
 
@@ -757,7 +757,7 @@ stringer_t * base64_decode_opts(stringer_t *s, uint32_t opts, bool_t modified) {
 	}
 
 	if (!b64_ret) {
-		log_pedantic("Unable to perform base64 decoding operation.");
+		mclog_pedantic("Unable to perform base64 decoding operation.");
 		st_free(result);
 		result = NULL;
 	}

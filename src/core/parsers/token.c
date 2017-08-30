@@ -19,8 +19,8 @@ uint64_t tok_get_count_bl(void *block, size_t length, char token) {
 	uint64_t count = 1;
 
 #ifdef MAGMA_PEDANTIC
-	if (!block) log_pedantic("Attempted a token count on a NULL string buffer.");
-	else if (!length) log_pedantic("Attempted a token count on an empty string.");
+	if (!block) mclog_pedantic("Attempted a token count on a NULL string buffer.");
+	else if (!length) mclog_pedantic("Attempted a token count on an empty string.");
 #endif
 
 	// We can't search NULL pointers or empty strings.
@@ -65,8 +65,8 @@ int tok_get_ns(char *string, size_t length, char token, uint64_t fragment, place
 	char *start;
 
 #ifdef MAGMA_PEDANTIC
-	if (!string) log_pedantic("Attempted token extraction from a NULL string buffer.");
-	else if (!length) log_pedantic("Attempted token extraction from an empty string.");
+	if (!string) mclog_pedantic("Attempted token extraction from a NULL string buffer.");
+	else if (!length) mclog_pedantic("Attempted token extraction from an empty string.");
 #endif
 
 	// We can't search NULL pointers or empty strings.

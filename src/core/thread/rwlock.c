@@ -18,7 +18,7 @@ int rwlock_init(pthread_rwlock_t *lock, pthread_rwlockattr_t *attr) {
 
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlock_init(lock, attr);
-	if (result) log_pedantic("Could not initialize the read/write lock. {pthread_rwlock_init = %i}", result);
+	if (result) mclog_pedantic("Could not initialize the read/write lock. {pthread_rwlock_init = %i}", result);
 	return result;
 #else
 	return pthread_rwlock_init(lock, attr);
@@ -36,7 +36,7 @@ int rwlock_lock_write(pthread_rwlock_t *lock) {
 
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlock_wrlock(lock);
-	if (result) log_pedantic("Could not obtain a write lock. {pthread_rwlock_wrlock = %i}", result);
+	if (result) mclog_pedantic("Could not obtain a write lock. {pthread_rwlock_wrlock = %i}", result);
 	return result;
 #else
 	return pthread_rwlock_wrlock(lock);
@@ -54,7 +54,7 @@ int rwlock_lock_read(pthread_rwlock_t *lock) {
 
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlock_rdlock(lock);
-	if (result) log_pedantic("Could not obtain a read lock. {pthread_rwlock_rdlock = %i}", result);
+	if (result) mclog_pedantic("Could not obtain a read lock. {pthread_rwlock_rdlock = %i}", result);
 	return result;
 #else
 	return pthread_rwlock_rdlock(lock);
@@ -72,7 +72,7 @@ int rwlock_unlock(pthread_rwlock_t *lock) {
 
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlock_unlock(lock);
-	if (result) log_pedantic("Could not release the read/write lock. {pthread_rwlock_unlock = %i}", result);
+	if (result) mclog_pedantic("Could not release the read/write lock. {pthread_rwlock_unlock = %i}", result);
 	return result;
 #else
 	return pthread_rwlock_unlock(lock);
@@ -89,7 +89,7 @@ int rwlock_unlock(pthread_rwlock_t *lock) {
 int rwlock_destroy(pthread_rwlock_t *lock) {
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlock_destroy(lock);
-	if (result) log_pedantic("Could not destroy the read/write lock. {pthread_rwlock_destroy = %i}", result);
+	if (result) mclog_pedantic("Could not destroy the read/write lock. {pthread_rwlock_destroy = %i}", result);
 	return result;
 #else
 	return pthread_rwlock_destroy(lock);
@@ -105,7 +105,7 @@ int rwlock_destroy(pthread_rwlock_t *lock) {
 int rwlock_attr_init(pthread_rwlockattr_t *attr) {
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlockattr_init(attr);
-	if (result) log_pedantic("Could not initialize the read/write lock attribute object. {pthread_rwlockattr_init = %i}", result);
+	if (result) mclog_pedantic("Could not initialize the read/write lock attribute object. {pthread_rwlockattr_init = %i}", result);
 	return result;
 #else
 	return pthread_rwlockattr_init(attr);
@@ -121,7 +121,7 @@ int rwlock_attr_init(pthread_rwlockattr_t *attr) {
 int rwlock_attr_destroy(pthread_rwlockattr_t *attr) {
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlockattr_destroy(attr);
-	if (result) log_pedantic("Could not destroy the read/write lock attribute object. {pthread_rwlockattr_destroy = %i}", result);
+	if (result) mclog_pedantic("Could not destroy the read/write lock attribute object. {pthread_rwlockattr_destroy = %i}", result);
 	return result;
 #else
 	return pthread_rwlockattr_destroy(attr);
@@ -138,7 +138,7 @@ int rwlock_attr_destroy(pthread_rwlockattr_t *attr) {
 int rwlock_attr_setkind(pthread_rwlockattr_t *attr, int pref) {
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlockattr_setkind_np(attr, pref);
-	if (result) log_pedantic("Could not set the read/write lock attribute preference. {pthread_rwlockattr_setkind_np = %i}", result);
+	if (result) mclog_pedantic("Could not set the read/write lock attribute preference. {pthread_rwlockattr_setkind_np = %i}", result);
 	return result;
 #else
 	return pthread_rwlockattr_setkind_np(attr, pref);
@@ -155,7 +155,7 @@ int rwlock_attr_setkind(pthread_rwlockattr_t *attr, int pref) {
 int rwlock_attr_getkind(pthread_rwlockattr_t *attr, int *pref) {
 #ifdef MAGMA_PEDANTIC
 	int result = pthread_rwlockattr_getkind_np(attr, pref);
-	if (result) log_pedantic("Could not get the read/write lock attribute preference. {pthread_rwlockattr_getkind_np = %i}", result);
+	if (result) mclog_pedantic("Could not get the read/write lock attribute preference. {pthread_rwlockattr_getkind_np = %i}", result);
 	return result;
 #else
 	return pthread_rwlockattr_getkind_np(attr, pref);

@@ -22,7 +22,7 @@ stringer_t * host_platform(stringer_t *output) {
 
 #ifdef MAGMA_PEDANTIC
 	if (ns_length_get(os.sysname) > st_avail_get(output)) {
-		log_pedantic("Output buffer is not large enough to hold the name of the platform.");
+		mclog_pedantic("Output buffer is not large enough to hold the name of the platform.");
 	}
 #endif
 
@@ -48,7 +48,7 @@ stringer_t * host_version(stringer_t *output) {
 
 #ifdef MAGMA_PEDANTIC
 	if (ns_length_get(os.release) > st_avail_get(output)) {
-		log_pedantic("Output buffer is not large enough to hold the platform version.");
+		mclog_pedantic("Output buffer is not large enough to hold the platform version.");
 	}
 #endif
 

@@ -189,13 +189,6 @@ enum {
 char * type(M_TYPE type);
 /************ TYPE ************/
 
-#define log_pedantic(...) printf(__VA_ARGS__)
-#define log_check(expr) do {} while (0)
-#define log_info(...) printf(__VA_ARGS__)
-#define log_error(...) printf(__VA_ARGS__)
-#define log_critical(...) printf(__VA_ARGS__)
-#define log_options(options, ...) printf(__VA_ARGS__)
-
 #include "memory/memory.h"
 #include "strings/strings.h"
 #include "classify/classify.h"
@@ -210,6 +203,7 @@ char * type(M_TYPE type);
 #include "parsers/parsers.h"
 #include "compare/compare.h"
 #include "parsers/parsers.h"
+#include "core_log.h"
 
 typedef struct {
 

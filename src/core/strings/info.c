@@ -126,7 +126,7 @@ chr_t * st_info_opts(uint32_t opts, chr_t *s, size_t len) {
 
 #ifdef MAGMA_PEDANTIC
 	/// LOW: We should calculate this at startup by iterating through the arrays above and summing the lengths.
-	if (len < 34) log_pedantic("The output buffer is smaller than the minimum possible length of 34.");
+	if (len < 34) mclog_pedantic("The output buffer is smaller than the minimum possible length of 34.");
 #endif
 
 	if (s && len) {
