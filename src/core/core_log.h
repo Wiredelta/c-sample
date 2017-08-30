@@ -55,17 +55,18 @@ extern magma_core_logger_t magma_core_loging;
 #undef mclog_critical
 #undef mclog_options
 
-#ifdef MAGMA_PEDANTIC
-	// Macro used record debug information during development.
-	#define mclog_pedantic(...) mclog_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_PEDANTIC, __VA_ARGS__)
-	// Log an error message if the specified conditional evaluates to true.
-	#define mclog_check(expr) do { if (expr) mclog_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_PEDANTIC, __STRING (expr)); } while (0)
-#else
+#ifndef MAGMA_PEDANTIC
 	#define mclog_pedantic(...) do {} while (0)
 	#define mclog_check(expr) do {} while (0)
 #endif
 
 #ifndef MAGMA_LOG_CONSOLE
+#ifdef MAGMA_PEDANTIC
+	// Macro used record debug information during development.
+	#define mclog_pedantic(...) mclog_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_PEDANTIC, __VA_ARGS__)
+	// Log an error message if the specified conditional evaluates to true.
+	#define mclog_check(expr) do { if (expr) mclog_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_PEDANTIC, __STRING (expr)); } while (0)
+#endif
 	// Used to record information related to daemon performance.
 	#define mclog_info(...) mclog_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_INFO, __VA_ARGS__)
 	// Used to log errors that may indicate a problem requiring user intervention to solve.
@@ -75,8 +76,10 @@ extern magma_core_logger_t magma_core_loging;
 	// Used to override the globally configured log options for a specific entry.
 	#define mclog_options(options, ...) mclog_internal (__FILE__, __FUNCTION__, __LINE__, options, __VA_ARGS__)
 #else// MAGMA_LOG_CONSOLE
+#ifdef MAGMA_PEDANTIC
 	#define mclog_pedantic(...) printf(__VA_ARGS__)
 	#define mclog_check(expr) do {} while (0)
+#endif
 	#define mclog_info(...) printf(__VA_ARGS__)
 	#define mclog_error(...) printf(__VA_ARGS__)
 	#define mclog_critical(...) printf(__VA_ARGS__)

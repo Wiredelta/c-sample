@@ -82,7 +82,7 @@ int tcp_wait(int sockd) {
  */
 int tcp_continue(int sockd, int result, int syserror) {
 
-	chr_t *message = MEMORYBUF(1024);
+	chr_t *message __attribute__((unused)) = MEMORYBUF(1024);
 
 	// Check that the daemon hasn't initiated a shutdown.
 	if (!status()) return -1;
