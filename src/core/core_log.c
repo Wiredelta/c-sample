@@ -33,5 +33,6 @@ void mclog_internal(const char *file, const char *function, const int line, M_LO
 	{
 		magma_core_loging.log_internal(file, function, line, options, format, args);
 	}
+
 	va_end(args);
 }
