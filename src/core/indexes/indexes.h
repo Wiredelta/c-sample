@@ -74,6 +74,7 @@ void            inx_cursor_reset(inx_cursor_t *cursor);
 void *          inx_cursor_value_active(inx_cursor_t *cursor);
 void *          inx_cursor_value_next(inx_cursor_t *cursor);
 
+typedef inx_t *(*inx_allocator)(uint64_t options, void *data_free);
 /// inx.c
 inx_t *    inx_alloc(uint64_t options, void *data_free);
 bool_t     inx_append(inx_t *inx, multi_t key, void *data);
@@ -93,6 +94,7 @@ bool_t     inx_replace(inx_t *inx, multi_t key, void *data);
 uint64_t   inx_serial(inx_t *inx);
 void       inx_truncate(inx_t *inx);
 void       inx_unlock(inx_t *inx);
+bool_t     inx_register_allocator(uint64_t options, inx_allocator allocator);
 
 /// linked.c
 inx_t * linked_alloc(uint64_t options, void *data_free);

@@ -7,6 +7,8 @@
 
 #include "../core.h"
 
+static inx_allocator tree_allocator = NULL;
+
 /**
  * @brief	Unlock an inx object.
  * @param	inx		a pointer to the inx object to be unlocked.
@@ -322,8 +324,8 @@ inx_t * inx_alloc(uint64_t options, void *data_free) {
 
 	switch (options & MAGMA_INDEX_TYPE) {
 	case M_INX_TREE:
-		//TODO: add index types extension mechanism
-		//inx = tree_alloc(options, data_free);
+		if(tree_allocator)
+			inx = tree_allocator(options, data_free);
 		break;
 	case M_INX_LINKED:
 		inx = linked_alloc(options, data_free);
@@ -343,5 +345,19 @@ inx_t * inx_alloc(uint64_t options, void *data_free) {
 	}
 
 	return inx;
+}
+
+/**
+ * @brief	Register a new inx type allocator callback.
+ * @param	options	 	a value indicating the inx type. Can be M_INX_TREE only.
+* @return	false on failure or true on success.
+ */
+bool_t inx_register_allocator(uint64_t options, inx_allocator allocator)
+{
+	if (M_INX_TREE != (options & MAGMA_INDEX_TYPE))
+		return false;
+
+	tree_allocator = allocator;
+	return true;
 }
 
