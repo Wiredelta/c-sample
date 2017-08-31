@@ -5,7 +5,9 @@
  * @brief The clamp function test cases.
  */
 
-#include "magma_check.h"
+//#include "magma_check.h"
+#include "core/core_check.h"
+#include "random_generator_check.h"
 
 /**
  * @brief	Check whether the clamp functions properly handle setting numbers to the min legal value in the supplied range.
@@ -26,7 +28,7 @@
 	// Randomly pick two numbers, and call clamp with the max value for the type and see if the right number is returned.
 	for (uint64_t i = 0; status() && i < 8192; i++) {
 
-		if (rand_write(PLACER(numbers, 16)) != 16) {
+		if (random_write_check(PLACER(numbers, 16)) != 16) {
 			return ns_dupe("We were unable to allocate the random number of bytes required for the test.");
 		}
 
@@ -66,7 +68,7 @@ chr_t * check_clamp_max(void) {
 	// Randomly pick two numbers, and call clamp with the max value for the type and see if the right number is returned.
 	for (uint64_t i = 0; status() && i < 8192; i++) {
 
-		if (rand_write(PLACER(numbers, 16)) != 16) {
+		if (random_write_check(PLACER(numbers, 16)) != 16) {
 			return ns_dupe("We were unable to allocate the random number of bytes required for the test.");
 		}
 
@@ -106,7 +108,7 @@ chr_t * check_clamp_max(void) {
 	// as the number. Then see if the result is equal to the first number.
 	for (uint64_t i = 0; status() && i < 8192; i++) {
 
-		if (rand_write(PLACER(numbers, 16)) != 16) {
+		if (random_write_check(PLACER(numbers, 16)) != 16) {
 			return ns_dupe("We were unable to allocate the random number of bytes required for the test.");
 		}
 
@@ -146,7 +148,7 @@ chr_t * check_clamp_min_max_invalid(void) {
 	// as the number. Then see if the result is equal to the first number.
 	for (uint64_t i = 0; status() && i < 8192; i++) {
 
-		if (rand_write(PLACER(numbers, 32)) != 32) {
+		if (random_write_check(PLACER(numbers, 32)) != 32) {
 			return ns_dupe("We were unable to allocate the random number of bytes required for the test.");
 		}
 
@@ -186,7 +188,7 @@ chr_t * check_clamp_randomizer(void) {
 	// as the number. Then see if the result is equal to the first number.
 	for (uint64_t i = 0; status() && i < 8192; i++) {
 
-		if (rand_write(PLACER(numbers, 32)) != 32) {
+		if (random_write_check(PLACER(numbers, 32)) != 32) {
 			return ns_dupe("We were unable to allocate the random number of bytes required for a true fuzz test.");
 		}
 

@@ -10,7 +10,7 @@
 
 magma_core_logger_t magma_core_loging;
 
-void magma_core_set_logger(magma_core_logger_t *info)
+void magma_core_set_logger(const magma_core_logger_t * const info)
 {
 	if(!info)
 	{
@@ -33,5 +33,6 @@ void mclog_internal(const char *file, const char *function, const int line, M_LO
 	{
 		magma_core_loging.log_internal(file, function, line, options, format, args);
 	}
+
 	va_end(args);
 }

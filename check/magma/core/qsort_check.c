@@ -5,7 +5,8 @@
  * @brief The heart of the suite of unit tests for the Magma core module.
  */
 
-#include "magma_check.h"
+#include "core.h"
+#include "core_check.h"
 
 struct check_mi_t months[] = {
 	{ 1, "jan"},

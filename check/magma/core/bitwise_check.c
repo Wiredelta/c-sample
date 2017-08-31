@@ -7,7 +7,8 @@
  *
 */
 
-#include "magma_check.h"
+//#include "magma_check.h"
+#include "core/core_check.h"
 
 
 bool_t check_bitwise_simple(void) {

@@ -5,7 +5,8 @@
  * @brief Network byte order tests.
  */
 
-#include "magma_check.h"
+#include "core_check.h"
+#include "parsers/numbers/numbers.h"
 
 bool_t check_nbo_simple(void) {
 

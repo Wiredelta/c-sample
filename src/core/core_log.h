@@ -44,7 +44,7 @@ typedef struct {
 	//TODO: other functions
 } magma_core_logger_t;
 
-void magma_core_set_logger(magma_core_logger_t *info);
+void magma_core_set_logger(const magma_core_logger_t * const info);
 
 extern magma_core_logger_t magma_core_loging;
 
@@ -87,4 +87,5 @@ extern magma_core_logger_t magma_core_loging;
 #endif// MAGMA_LOG_CONSOLE
 
 #endif // MAGMA_CORE_LOGGING_H
+
 

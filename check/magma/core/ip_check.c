@@ -5,7 +5,9 @@
  * @brief Various checks designed to make sure the IP address interface works as expected.
  */
 
-#include "magma_check.h"
+#include "core_check.h"
+
+#define log_disable()
 
 bool_t check_uint16_to_hex_st(uint16_t val, stringer_t *buff) {
 

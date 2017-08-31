@@ -5,7 +5,8 @@
  * @brief Unit tests for linked lists.
  */
 
-#include "magma_check.h"
+#include "core_check.h"
+#include "random_generator_check.h"
 
 
 bool_t check_indexes_linked_cursor_compare(uint64_t values[], inx_cursor_t *cursor) {
@@ -75,7 +76,7 @@ bool_t check_indexes_linked_cursor(char **errmsg) {
 	uint64_t values[LINKED_CURSORS_CHECK];
 
 	for (uint64_t i = 0; status() && i < LINKED_CURSORS_CHECK; i++) {
-		values[i] = rand_get_uint64();
+		values[i] = rand_get_uint64_check();
 	}
 
 	// Insert random numbers into values array.
@@ -139,7 +140,7 @@ bool_t check_indexes_linked_simple(char **errmsg) {
 
 	// Insert 128 random numbers into a linked list index.
 	for (uint64_t i = 0; status() && i < LINKED_INSERTS_CHECK; i++) {
-		rnum = rand_get_uint64();
+		rnum = rand_get_uint64_check();
 		snprintf(snum, 1024, "%lu", rnum);
 
 		if (!(val = mm_alloc(sizeof(uint64_t)))) {

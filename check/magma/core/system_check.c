@@ -5,7 +5,7 @@
  * @brief System helper function checks.
  */
 
-#include "magma_check.h"
+#include "core_check.h"
 
 bool_t check_system_signames(void) {
 

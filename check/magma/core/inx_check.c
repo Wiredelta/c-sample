@@ -5,7 +5,11 @@
  * @brief Index checks.
  */
 
-#include "magma_check.h"
+#include "core_check.h"
+#include "random_generator_check.h"
+
+/// instrumentation
+#define log_error(a)
 
 bool_t check_inx_cursor_sthread(check_inx_opt_t *opts) {
 
@@ -55,7 +59,7 @@ bool_t check_inx_sthread(check_inx_opt_t *opts) {
 
 	for (uint64_t i = rnum = 0; status() && i < INX_CHECK_OBJECTS; i++) {
 
-		rnum += (rand_get_uint64()) + 1;
+		rnum += (rand_get_uint64_check()) + 1;
 		snprintf(snum, 64, "%lu", rnum);
 
 		if (!(val = ns_dupe(snum))) {

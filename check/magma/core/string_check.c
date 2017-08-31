@@ -5,7 +5,8 @@
  * @brief Unit tests for tree based indexes.
  */
 
-#include "magma_check.h"
+#include "core_check.h"
+#include "random_generator_check.h"
 
 stringer_t *string_check_constant = CONSTANT("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
 
@@ -299,7 +300,7 @@ bool_t check_string_write(void) {
 	stringer_t *output = MANAGEDBUF(1024), *strings[3] = { MANAGEDBUF(32), MANAGEDBUF(64), MANAGEDBUF(128) };
 
 	for (int i = 0; i < 3; i++) {
-		rand_write(strings[i]);
+		random_write_check(strings[i]);
 	}
 
 	if (st_write(NULL, strings[0], strings[1], strings[2]) != 224) {
