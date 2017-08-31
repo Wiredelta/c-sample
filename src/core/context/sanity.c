@@ -1,10 +1,10 @@
 
 /**
- * @file /magma/engine/context/sanity.c
+ * @file /magma/src/core/context/sanity.c
  *
  * @brief	A collection of checks performed at launch to make sure the system will operate as expected.
  */
-#include "magma.h"
+#include "../core.h"
 
 /**
  * @brief	Perform a series of system-wide sanity checks at process startup.
@@ -12,7 +12,7 @@
  * 			checks, such as data primitive maximum values.
  * @return	true if the system environment passed all checks and should function correctly, or false if any checks failed.
  */
-bool_t sanity_check(void) {
+bool_t magma_core_sanity_check(void) {
 
 	stringer_t *st;
 	size_t sz[2] = { 0, 0 };
@@ -114,9 +114,9 @@ bool_t sanity_check(void) {
 	// need for a compress_t block. If the length of two size_t variables is greater than the length of of a record_t,
 	// then the math being used to write data out would be susceptible to a buffer underflow. To ensure we never forget
 	// this we check to ensure this system doesn't break the type assumptions.
-	if ((sizeof(size_t) + sizeof(size_t)) > sizeof(record_t)) {
-	 return false;
-	}
+	//if ((sizeof(size_t) + sizeof(size_t)) > sizeof(record_t)) {
+	// return false;
+	//}
 
 	// We also need to make sure the stringer_t format doesn't change in a way that would break the implementation.
 	if (!(st = st_alloc(1))) {
@@ -135,9 +135,9 @@ bool_t sanity_check(void) {
 	// but this code will confirm that assumption. If the order is ever changed this code will need to be updated
 	// or the prepared statement pointers won't correlate with the correct SQL query. This order based calculation is used
 	// by the functions stmt_start(), stmt_rebuild(), and stmt_stop().
-	if (st_cmp_cs_eq(NULLER(queries[0]), CONSTANT(SELECT_DOMAINS))) {
-		return false;
-	}
+	//if (st_cmp_cs_eq(NULLER(queries[0]), CONSTANT(SELECT_DOMAINS))) {
+	//	return false;
+	//}
 
 	// The ip_family() function uses AF_UNSPEC for unrecognized address families, and -1 for invalid address structures,
 	// so we perform a sanity check to ensure AF_UNSPEC remains 0 so that ip_family(ip) <= AF_UNSPEC functions as a generic

@@ -161,9 +161,9 @@ void process_stop(void) {
  */
 bool_t process_start(void) {
 
-	spool_set_rand_provider(rand_get_uint64);
+	spool_set_rand_provider(&rand_get_uint64);// TODO: tmp
 	bool_t (*starters[])() = {
-		(void *)&sanity_check,
+		(void *)&magma_core_sanity_check,
 		NULL,
 		(void *)&config_load_defaults,
 		(void *)&config_load_file_settings,

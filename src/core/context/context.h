@@ -13,7 +13,7 @@ void	display_usage(void);
 bool_t	args_parse(int argc, char *argv[]);
 
 /************  SANITY  ************/
-bool_t sanity_check(void);
+bool_t magma_core_sanity_check(void);
 /************  SANITY  ************/
 
 /************ STARTUP/SHUTDOWN ************/

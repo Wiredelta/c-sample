@@ -22,43 +22,14 @@ stringer_t *cmdline_config_data = NULL;
  */
 void config_free(void) {
 
-	for (uint64_t i = 0; i < sizeof(magma_keys) / sizeof(magma_keys_t); i++) {
-		switch (magma_keys[i].norm.type) {
+	cu_free(magma_keys, sizeof(magma_keys) / sizeof(magma_keys_t));
 
-		case (M_TYPE_BLOCK):
-			if (*((void **)(magma_keys[i].store))) {
-				mm_free(*((void **)(magma_keys[i].store)));
-			}
-			break;
-		case (M_TYPE_NULLER):
-			if (*((char **)(magma_keys[i].store))) {
-				ns_free(*((char **)(magma_keys[i].store)));
-			}
-			break;
-		case (M_TYPE_STRINGER):
-
-			// Intercept the blacklist config key.
-			if (!st_cmp_cs_eq(NULLER(magma_keys[i].name), PLACER("magma.smtp.blacklist", 20))) {
-				for (uint32_t j = 0; j < magma.smtp.blacklists.count; j++) {
-					st_free(magma.smtp.blacklists.domain[j]);
-				}
-			}
-			else if (*((stringer_t **)(magma_keys[i].store))) {
-				st_free(*((stringer_t **)(magma_keys[i].store)));
-			}
-			break;
-		default:
-#ifdef MAGMA_PEDANTIC
-			if (magma_keys[i].norm.type != M_TYPE_BOOLEAN && magma_keys[i].norm.type != M_TYPE_DOUBLE && magma_keys[i].norm.type != M_TYPE_FLOAT &&
-					magma_keys[i].norm.type != M_TYPE_INT16 && magma_keys[i].norm.type != M_TYPE_INT32 && magma_keys[i].norm.type != M_TYPE_INT64 &&
-					magma_keys[i].norm.type != M_TYPE_INT8 && magma_keys[i].norm.type != M_TYPE_UINT8 && magma_keys[i].norm.type != M_TYPE_UINT16 &&
-					magma_keys[i].norm.type != M_TYPE_UINT32 && magma_keys[i].norm.type != M_TYPE_UINT64 && magma_keys[i].norm.type != M_TYPE_ENUM) {
-				log_pedantic("Unexpected type. {type = %s = %u}", type(magma_keys[i].norm.type), magma_keys[i].norm.type);
-			}
-#endif
-			break;
-		}
-	}
+	// Intercept the blacklist config key.
+//		if (!st_cmp_cs_eq(NULLER(magma_keys[i].name), PLACER("magma.smtp.blacklist", 20))) {
+//			for (uint32_t j = 0; j < magma.smtp.blacklists.count; j++) {
+//				st_free(magma.smtp.blacklists.domain[j]);
+//			}
+//		}
 
 	cache_free();
 	relay_free();
@@ -548,135 +519,7 @@ bool_t config_value_set(magma_keys_t *setting, stringer_t *value) {
 			return true;
 		}
 
-
-	switch (setting->norm.type) {
-
-	// Strings
-	case (M_TYPE_NULLER):
-		if (!ns_empty(*((char **)(setting->store)))) {
-			ns_free(*((char **)(setting->store)));
-			*((char **)(setting->store)) = NULL;
-		}
-		if (!st_empty(value))
-			*((char **)(setting->store)) = ns_import(st_char_get(value), st_length_get(value));
-		else if (!ns_empty(setting->norm.val.ns))
-			*((char **)(setting->store)) = ns_dupe(setting->norm.val.ns);
-		break;
-
-	case (M_TYPE_STRINGER):
-		if (!st_empty(*((stringer_t **)(setting->store)))) {
-			st_free(*((stringer_t **)(setting->store)));
-			*((stringer_t **)(setting->store)) = NULL;
-		}
-		if (!st_empty(value))
-			*((stringer_t **)(setting->store)) = st_dupe_opts(MANAGED_T | CONTIGUOUS | HEAP, value);
-		else if (!st_empty(setting->norm.val.st))
-			*((stringer_t **)(setting->store)) = st_dupe_opts(MANAGED_T | CONTIGUOUS | HEAP, setting->norm.val.st);
-		break;
-
-		// Booleans
-	case (M_TYPE_BOOLEAN):
-		if (!st_empty(value)) {
-			if (!st_cmp_ci_eq(value, CONSTANT("true")))
-				*((bool_t *)(setting->store)) = true;
-			else if (!st_cmp_ci_eq(value, CONSTANT("false")))
-				*((bool_t *)(setting->store)) = false;
-			else {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((bool_t *)(setting->store)) = setting->norm.val.binary;
-		break;
-
-		// Integers
-	case (M_TYPE_INT8):
-		if (!st_empty(value)) {
-			if (!int8_conv_st(value, (int8_t *)(setting->store))) {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((int8_t *)(setting->store)) = setting->norm.val.i8;
-		break;
-
-	case (M_TYPE_INT16):
-		if (!st_empty(value)) {
-			if (!uint16_conv_st(value, (uint16_t *)(setting->store))) {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((int16_t *)(setting->store)) = setting->norm.val.u16;
-		break;
-
-	case (M_TYPE_INT32):
-		if (!st_empty(value)) {
-			if (!int32_conv_st(value, (int32_t *)(setting->store))) {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((int32_t *)(setting->store)) = setting->norm.val.i32;
-		break;
-
-	case (M_TYPE_INT64):
-		if (!st_empty(value)) {
-			if (!int64_conv_st(value, (int64_t *)(setting->store))) {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((int64_t *)(setting->store)) = setting->norm.val.i64;
-		break;
-
-		// Unsigned Integers
-	case (M_TYPE_UINT8):
-		if (!st_empty(value)) {
-			if (!uint8_conv_st(value, (uint8_t *)(setting->store))) {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((uint8_t *)(setting->store)) = setting->norm.val.u8;
-		break;
-
-	case (M_TYPE_UINT16):
-		if (!st_empty(value)) {
-			if (!uint16_conv_st(value, (uint16_t *)(setting->store))) {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((uint16_t *)(setting->store)) = setting->norm.val.u16;
-		break;
-
-	case (M_TYPE_UINT32):
-		if (!st_empty(value)) {
-			if (!uint32_conv_st(value, (uint32_t *)(setting->store))) {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((uint32_t *)(setting->store)) = setting->norm.val.u32;
-		break;
-
-	case (M_TYPE_UINT64):
-		if (!st_empty(value)) {
-			if (!uint64_conv_st(value, (uint64_t *)(setting->store))) {
-				log_critical("Invalid value for %s.", setting->name);
-				result = false;
-			}
-		} else
-			*((uint64_t *)(setting->store)) = setting->norm.val.u64;
-		break;
-
-	default:
-		log_critical("The %s setting definition is using an invalid type.", setting->name);
-		result = false;
-		break;
-	}
-	return result;
+	return cu_value_set(setting, value);
 }
 
 /**
@@ -684,23 +527,8 @@ bool_t config_value_set(magma_keys_t *setting, stringer_t *value) {
  * @return	true if all default magma config values were successfully loaded, or false on failure.
  */
 bool_t config_load_defaults(void) {
-
 	// Run through and setup the default values.
-	for (uint64_t i = 0; i < sizeof(magma_keys) / sizeof(magma_keys_t); i++) {
-		if (!magma_keys[i].required && !config_value_set(&magma_keys[i], NULL)) {
-			log_info("%s has an invalid default value.", magma_keys[i].name);
-			config_free();
-			return false;
-		}
-//		else if (magma_keys[i].required && magma_keys[i].norm.type == M_TYPE_BOOLEAN &&
-//			magma_keys[i].norm.val.binary == false && !config_value_set(&magma_keys[i], NULL)) {
-//			log_info("%s has an invalid default value.", magma_keys[i].name);
-//			config_free();
-//			return false;
-//		}
-	}
-
-	return true;
+	return cu_load_defaults(magma_keys, sizeof(magma_keys) / sizeof(magma_keys_t));
 }
 
 /**
@@ -709,16 +537,7 @@ bool_t config_load_defaults(void) {
  * @return	NULL on failure or a pointer to the found magma key object on success.
  */
 magma_keys_t * config_key_lookup(stringer_t *name) {
-
-	magma_keys_t *result = NULL;
-
-	for (uint64_t i = 0; !result && name && i < sizeof(magma_keys) / sizeof(magma_keys_t); i++) {
-		if (!st_cmp_ci_eq(NULLER(magma_keys[i].name), name)) {
-			result = &magma_keys[i];
-		}
-	}
-
-	return result;
+	return cu_key_lookup(magma_keys, sizeof(magma_keys) / sizeof(magma_keys_t), name);
 }
 
 /**
@@ -732,92 +551,30 @@ magma_keys_t * config_key_lookup(stringer_t *name) {
  */
 bool_t config_load_file_settings(void) {
 
-	multi_t name;
-	magma_keys_t *key;
-	inx_cursor_t *cursor;
-	nvp_t *config_pairs = NULL;
-	stringer_t *file_data = NULL, *value;
-
-	// Load the config file and convert it into a name/value pair structure.
-	if (!(file_data = file_load(magma.config.file))) {
+	if(!cu_load_file_settings(magma_keys, sizeof(magma_keys) / sizeof(magma_keys_t), magma_core.config.file))
 		return false;
-	}
-	else if (!(config_pairs = nvp_alloc())) {
-		st_free(file_data);
-		return false;
-	}
-	else if (nvp_parse(config_pairs, file_data) < 0) {
-		nvp_free(config_pairs);
-		st_free(file_data);
-		return false;
-	}
-	else if (!(cursor = inx_cursor_alloc(config_pairs->pairs))) {
-		nvp_free(config_pairs);
-		st_free(file_data);
-		return false;
-	}
 
-	// Raw file data isn't needed any longer so free.
-	st_free(file_data);
-
-	// Run through all of the magma_keys and see if there is a matching name/value pair.
-	while (!mt_is_empty(name = inx_cursor_key_next(cursor))) {
-
-		value = inx_cursor_value_active(cursor);
-
-		if ((key = config_key_lookup(name.val.st))) {
-
-			// Make sure the setting can be provided via the configuration file.
-			if (!key->file && value) {
-					log_critical("%s cannot be changed using the configuration file.", key->name);
-					inx_cursor_free(cursor);
-					nvp_free(config_pairs);
-					return false;
-			}
-
-			// Make sure the required magma_keys are not set to NULL.
-			else if (key->required && st_empty(value)) {
-				log_critical("%s requires a legal value.", key->name);
-				inx_cursor_free(cursor);
-				nvp_free(config_pairs);
-				return false;
-			}
-
-			// Attempt to set the value.
-			else if (!config_value_set(key, value)) {
-				inx_cursor_free(cursor);
-				nvp_free(config_pairs);
-				return false;
-			}
-
-			// If a legit value was provided, then record that we've set this parameter.
-			key->set = true;
-		}
-
-		// If we haven't had a match yet, check if its a server param.
-		else if (name.val.st && !st_cmp_ci_starts(name.val.st, CONSTANT("magma.servers"))) {
-			servers_config(name.val.st, value);
-		}
-
-		// If we haven't had a match yet, check if its a relay instance.
-		else if (name.val.st && !st_cmp_ci_starts(name.val.st, CONSTANT("magma.relay"))) {
-			relay_config(name.val.st, value);
-		}
-
-		else if (name.val.st && !st_cmp_ci_starts(name.val.st, CONSTANT("magma.iface.cache.host"))) {
-			cache_config(name.val.st, value);
-		}
-
-		else {
-			log_critical("%.*s is not a valid setting.", st_length_int(name.val.st), st_char_get(name.val.st));
-			inx_cursor_free(cursor);
-			nvp_free(config_pairs);
-			return false;
-		}
-	}
-
-	inx_cursor_free(cursor);
-	nvp_free(config_pairs);
+//TODO: ?????
+//	// If we haven't had a match yet, check if its a server param.
+//	else if (name.val.st && !st_cmp_ci_starts(name.val.st, CONSTANT("magma.servers"))) {
+//		servers_config(name.val.st, value);
+//	}
+//
+//	// If we haven't had a match yet, check if its a relay instance.
+//	else if (name.val.st && !st_cmp_ci_starts(name.val.st, CONSTANT("magma.relay"))) {
+//		relay_config(name.val.st, value);
+//	}
+//
+//	else if (name.val.st && !st_cmp_ci_starts(name.val.st, CONSTANT("magma.iface.cache.host"))) {
+//		cache_config(name.val.st, value);
+//	}
+//
+//	else {
+//		log_critical("%.*s is not a valid setting.", st_length_int(name.val.st), st_char_get(name.val.st));
+//		inx_cursor_free(cursor);
+//		nvp_free(config_pairs);
+//		return false;
+//	}
 
 	return true;
 }

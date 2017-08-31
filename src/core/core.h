@@ -204,6 +204,7 @@ char * type(M_TYPE type);
 #include "compare/compare.h"
 #include "parsers/parsers.h"
 #include "core_log.h"
+#include "config/config_utils.h"
 
 typedef struct {
 

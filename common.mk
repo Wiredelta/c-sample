@@ -10,10 +10,13 @@ OBJDIR							= .objs
 
 ifneq ($(PEDANTIC),no)
 MAGMA_PEDANTIC = -DMAGMA_PEDANTIC
+PEDANTIC = yes
 endif
 
 ifeq ($(CONSOLE_LOG),yes)
 MAGMA_CONSOLE_LOG = -DMAGMA_LOG_CONSOLE
+else
+CONSOLE_LOG = no
 endif
 
 CDEFINES						= $(MAGMA_CONSOLE_LOG) $(MAGMA_PEDANTIC) -D_REENTRANT -D_GNU_SOURCE -D_LARGEFILE64_SOURCE -DHAVE_NS_TYPE -DFORTIFY_SOURCE=2 
@@ -89,7 +92,7 @@ NORMAL							= $$(tput sgr0)
 
 warning:
 ifeq ($(VERBOSE),no)
-	@echo 
+	@echo Options: $(GREEN)PEDANTIC=$(PEDANTIC) CONSOLE_LOG=$(CONSOLE_LOG)$(NORMAL)
 	@echo 'For a more verbose output' 
 	@echo '  make '$(GREEN)'VERBOSE=yes' $(NORMAL)$(TARGETGOAL)
 	@echo 

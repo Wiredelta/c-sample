@@ -48,7 +48,7 @@ int_t file_read(char *name, stringer_t *output) {
  * @param	name	a character pointer to the full pathname of the file to be opened.
  * @return	NULL on failure, or a managed string containing all the data in the file.
  */
-stringer_t * file_load(char *name) {
+stringer_t * file_load(const char *name) {
 
 	int fd;
 	stringer_t *result;
