@@ -5,7 +5,9 @@
  * @brief The unit tests for the checksumming functions.
  */
 
-#include "magma_check.h"
+//#include "magma_check.h"
+#include "core/core_check.h"
+#include "random_generator_check.h"
 
 void check_checksum_fillbuf(uchr_t *buf, size_t len, uchr_t pos) {
   while (len--) {
@@ -26,7 +28,7 @@ bool_t check_checksum_fuzz_sthread(void) {
 		len = uint64_clamp(16, CHECKSUM_CHECK_SIZE, (rand() % CHECKSUM_CHECK_SIZE));
 
 		// Fill the buffer with random data and convert the buffer to encrypted.
-		if (rand_write(PLACER(buffer, len)) != len) {
+		if (random_write_check(PLACER(buffer, len)) != len) {
 			return false;
 		}
 

@@ -8,7 +8,15 @@
 #ifndef CORE_CHECK_H
 #define CORE_CHECK_H
 
-#include "src/core/core.h"
+/*
+#include "core/core.h"
+#include "core/strings/strings.h"
+#include "core/indexes/indexes.h"
+*/
+
+#include "core.h"
+#include "strings/strings.h"
+#include "indexes/indexes.h"
 
 #include <ctype.h>
 #include <sys/ptrace.h>
@@ -18,7 +26,7 @@
 
 extern int case_timeout;
 
-#define log_unit(...) log_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_LINE_FEED_DISABLE | M_LOG_TIME_DISABLE | M_LOG_FILE_DISABLE | M_LOG_LINE_DISABLE | M_LOG_FUNCTION_DISABLE | M_LOG_STACK_TRACE_DISABLE, __VA_ARGS__)
+//#define log_unit(...) log_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_LINE_FEED_DISABLE | M_LOG_TIME_DISABLE | M_LOG_FILE_DISABLE | M_LOG_LINE_DISABLE | M_LOG_FUNCTION_DISABLE | M_LOG_STACK_TRACE_DISABLE, __VA_ARGS__)
 //#define testcase(s, tc, name, func) tcase_add_test((tc = tcase_create(name)), func); tcase_set_timeout(tc, case_timeout); suite_add_tcase(s, tc)
 
 Suite * suite_check_sample(void);
@@ -303,4 +311,3 @@ void check_address_subnet_s (int _i CK_ATTRIBUTE_UNUSED);
 bool_t check_ip_private_scheck(stringer_t *errmsg);
 bool_t check_ip_localhost_scheck(stringer_t *errmsg);
 
-#endif

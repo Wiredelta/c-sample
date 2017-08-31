@@ -13,7 +13,7 @@ PACKAGE_TARNAME					= magmacore
 PACKAGE_VERSION					= 6.4
 PACKAGE_STRING					= $(PACKAGE_NAME) $(PACKAGE_VERSION)
 
-MAGMA_CORE_SHARED				= $(addsuffix $(DYNLIBEXT), magmacore)
+MAGMA_CORE_SHARED			= $(addsuffix $(DYNLIBEXT), magmacore)
 MAGMA_CORE_STATIC				= $(addsuffix $(STATLIBEXT), magmacore)
 MAGMA_CORE_CHECK_PROGRAM		= $(addsuffix $(EXEEXT), magmacore.check)
 
@@ -24,8 +24,9 @@ FILTERED_CORE_SRCFILES			=
 MAGMA_CORE_SRCDIRS				= $(subst ./,,$(shell find ./src/core -type d -print))
 MAGMA_CORE_SRCFILES				= $(filter-out $(FILTERED_CORE_SRCFILES), $(foreach dir, $(MAGMA_CORE_SRCDIRS), $(wildcard $(dir)/*.c)))
 
-MAGMA_CORE_CINCLUDES			= #-I$(TOPDIR)
-MAGMA_CORE_CHECK_CINCLUDES		= 
+INCDIR							= -I$(TOPDIR)/lib/local/include -I$(TOPDIR)/src/core
+MAGMA_CORE_CINCLUDES			= $(INCDIR) $(addprefix -I,$(MAGMA_CORE_INCLUDE_ABSPATHS))
+CDEFINES						= -D_REENTRANT -D_GNU_SOURCE -D_LARGEFILE64_SOURCE -DHAVE_NS_TYPE -DFORTIFY_SOURCE=2 -DMAGMA_PEDANTIC 
 
 #MAGMA_CORE_CHECK_STATIC		= $(MAGMA_CORE_STATIC) $(TOPDIR)/lib/local/lib/libcheck.a
 
@@ -35,22 +36,23 @@ MAGMA_CORE_CHECK_DYNAMIC		= $(MAGMA_CORE_LDYNAMIC) -L$(TOPDIR)/magmacore
 MAGMA_CORE_CHECK_SRCDIRS		= $(shell find check/magma/core -type d -print)
 MAGMA_CORE_CHECK_SRCFILES		= $(foreach dir, $(MAGMA_CORE_CHECK_SRCDIRS), $(wildcard $(dir)/*.c))
 
-MAGMA_CORE_CINCLUDES			= -Isrc -Isrc/providers -I$(INCDIR) $(addprefix -I,$(MAGMA_CORE_INCLUDE_ABSPATHS))
-MAGMA_CORE_CHECK_CINCLUDES		= -Icheck/magma -Ilib/local/include/ $(MAGMA_CINCLUDES) $(addprefix -I,$(MAGMA_CHECK_INCLUDE_ABSPATHS))
-MAGMA_CORE_CHECK_DEPFILES		= $(patsubst %.c,$(DEPDIR)/%.d,$(MAGMA_CORE_CHECK_SRCFILES))
+MAGMA_CORE_CHECK_CINCLUDES		= -Icheck/magma -Ilib/local/include/ $(MAGMA_CORE_CINCLUDES) $(addprefix -I,$(MAGMA_CHECK_INCLUDE_ABSPATHS))
+MAGMA_CORE_CHECK_DEPFILES			= $(patsubst %.c,$(DEPDIR)/%.d,$(MAGMA_CORE_CHECK_SRCFILES))
 MAGMA_CORE_CHECK_OBJFILES		= $(patsubst %.c,$(OBJDIR)/%.o,$(MAGMA_CORE_CHECK_SRCFILES))
 MAGMA_CHECK_INCLUDE_ABSPATHS	+= $(foreach target,$(MAGMA_CORE_CHECK_INCDIRS), $(call INCLUDE_DIR_SEARCH,$(target)))
 
 #PACKAGE_DEPENDENCIES			= $(MAGMA_CORE_SHARED) $(MAGMA_CORE_STATIC) $(filter-out $(MAGMA_CORE_STATIC), $(MAGMA_CORE_CHECK_STATIC))
 
 check: config warning $(MAGMA_CORE_CHECK_PROGRAM) finished
-	$(RUN)$(TOPDIR)/$(MAGMA_CORE_CHECK_PROGRAM) sandbox/etc/magma.sandbox.config > loggggg.txt
+	@echo "Nagna Core Unit Test is launching"
+	$(RUN)$(TOPDIR)/$(MAGMA_CORE_CHECK_PROGRAM) sandbox/etc/magma.sandbox.config
 
-# The Magma Core Unit Test Object Files
+# The Magma Core Unit Test Object Files 
 $(OBJDIR)/check/magma/core/%.o: check/magma/core/%.c
 ifeq ($(VERBOSE),no)
 	@echo 'Building' $(YELLOW)$<$(NORMAL)
 endif
+	@echo "The Magma Core Unit Test Object Files "
 	@test -d $(DEPDIR)/$(dir $<) || $(MKDIR) $(DEPDIR)/$(dir $<)
 	@test -d $(OBJDIR)/$(dir $<) || $(MKDIR) $(OBJDIR)/$(dir $<)
 	$(RUN)$(CC) -o '$@' $(CFLAGS) $(CDEFINES) $(CFLAGS.$(<F)) $(CDEFINES.$(<F)) $(MAGMA_CORE_CHECK_CINCLUDES) -MF"$(<:%.c=$(DEPDIR)/%.d)" -MT"$@" "$<"

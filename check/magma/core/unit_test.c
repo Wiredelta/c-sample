@@ -1,4 +1,35 @@
+/**
+ * @file /check/magma/core/unit_test.c
+ *
+ * @brief main module for core testing application.
+ *
+ * @Author	Yan Tataryntsev
+ */
+
+#include <dlfcn.h>
+
+#include "core.h"
 #include "core_check.h"
+#include "../color.h"
+
+
+#define log_enable()
+#define log_unit(a, b, c, d, e)
+
+// Used to record information related to daemon performance.
+#define log_info(...) log_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_INFO, __VA_ARGS__)
+
+// Used to log errors that may indicate a problem requiring user intervention to solve.
+#define log_error(...) log_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_ERROR, __VA_ARGS__)
+
+// Used to record errors that could cause system instability.
+#define log_critical(...) log_internal (__FILE__, __FUNCTION__, __LINE__, M_LOG_CRITICAL, __VA_ARGS__)
+
+// Used to override the globally configured log options for a specific entry.
+#define log_options(options, ...) log_internal (__FILE__, __FUNCTION__, __LINE__, options, __VA_ARGS__)
+
+#define log_internal(...)
+
 
 int_t case_timeout = RUN_TEST_CASE_TIMEOUT;
 bool_t do_virus_check = true, do_tank_check = true, do_dspam_check = true, do_spf_check = true;
@@ -200,7 +231,7 @@ int_t check_args_parse(int argc, char *argv[]) {
 		}
 		// Otherwise it's the config file
 		else if (i == (argc - 1) && mm_cmp_cs_eq(argv[i], "-", 1)) {
-			snprintf(magma.config.file, MAGMA_FILEPATH_MAX, "%s", argv[i]);
+			snprintf(magma_core.config.file, MAGMA_FILEPATH_MAX, "%s", argv[i]);
 			i++;
 		}
 		else {

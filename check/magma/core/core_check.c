@@ -5,7 +5,28 @@
  * @brief The heart of the suite of unit tests for the Magma core module.
  */
 
-include "core_check.h"
+#ifndef __CORE_CHECK__H__
+#define __CORE_CHECK__H__
+
+
+#include <ctype.h>
+#include <sys/ptrace.h>
+#include <sys/wait.h>
+
+#include <check.h>
+#include <valgrind/valgrind.h>
+
+#include "core.h"
+#include "core_check.h"
+#include "random_generator_check.h"
+
+#define log_disable(a)
+#define log_enable(a)
+#define log_unit(a, b)
+
+
+
+extern magma_core_t magma_core;
 
 // Normally the START_TEST macro creates a static testcase function. Unfortunately we can't
 // find those symbols using dlsym() so we can't dynamically select individual test cases at
@@ -520,15 +541,15 @@ START_TEST (check_digits) {
 
 	for (uint64_t i = 0; status() && outcome && i < 8192; i++) {
 
-		i8 = rand_get_int8();
-		i16 = rand_get_int16();
-		i32 = rand_get_int32();
-		i64 = rand_get_int64();
+		i8 = rand_get_int8_check();
+		i16 = rand_get_int16_check();
+		i32 = rand_get_int32_check();
+		i64 = rand_get_int64_check();
 
-		ui8 = rand_get_uint8();
-		ui16 = rand_get_uint16();
-		ui32 = rand_get_uint32();
-		ui64 = rand_get_uint64();
+		ui8 = rand_get_uint8_check();
+		ui16 = rand_get_uint16_check();
+		ui32 = rand_get_uint32_check();
+		ui64 = rand_get_uint64_check();
 
 		if (int8_digits(i8) != snprintf(buf, 1024, "%hhi", i8))
 			outcome = false;
@@ -749,7 +770,7 @@ START_TEST (check_secmem) {
 	void *blocks[1024];
 	stringer_t *errmsg = NULL;
 
-	if (status() && magma.secure.memory.enable && (bsize = (magma.secure.memory.length / 1024))) {
+	if (status() && magma_core.secure.memory.enable && (bsize = (magma_core.secure.memory.length / 1024))) {
 
 		// Now try and trigger an overflow.
 		for (size_t i = 0; i < 1024; i++) {
@@ -777,7 +798,7 @@ START_TEST (check_secmem) {
 
 		// Now were going to request randomly sized blocks.
 		for (size_t i = 0; i < 1024; i++) {
-			blocks[i] = mm_sec_alloc(bsize + rand_get_uint32() % 32);
+			blocks[i] = mm_sec_alloc(bsize + rand_get_uint32_check() % 32);
 		}
 
 		for (size_t i = 0; i < 1024; i++) {
@@ -789,7 +810,7 @@ START_TEST (check_secmem) {
 	}
 
 	log_test("CORE / MEMORY / SECURE ADDRESS RANGE / SINGLE THREADED:",
-			!errmsg ? (status() && magma.secure.memory.enable && (magma.secure.memory.length / 1024)
+			!errmsg ? (status() && magma_core.secure.memory.enable && (magma_core.secure.memory.length / 1024)
 					? errmsg : NULLER("SKIPPED")) : errmsg);
 	ck_assert_msg(!errmsg, st_char_get(errmsg));
 }
@@ -966,3 +987,4 @@ Suite * suite_check_core(void) {
 	return s;
 }
 
+#endif // __CORE_CHECK__H__

@@ -5,7 +5,10 @@
  * @brief Quoted printable encoder unit tests.
  */
 
-#include "magma_check.h"
+#include "core_check.h"
+#include "random_generator_check.h"
+#include "encodings/encodings.h"
+#include "compare/compare.h"
 
 bool_t check_encoding_qp(void) {
 
@@ -15,7 +18,7 @@ bool_t check_encoding_qp(void) {
 	for (uint64_t i = 0; status() && i < QP_CHECK_ITERATIONS; i++) {
 
 		// Fill the buffer with random data and convert the buffer to hex.
-		if (rand_write(PLACER(buffer, QP_CHECK_SIZE)) != QP_CHECK_SIZE) {
+		if (random_write_check(PLACER(buffer, QP_CHECK_SIZE)) != QP_CHECK_SIZE) {
 			return false;
 		}
 		else if (!(qp = qp_encode(PLACER(buffer, QP_CHECK_SIZE)))) {

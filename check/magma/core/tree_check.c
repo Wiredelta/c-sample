@@ -5,7 +5,8 @@
  * @brief Unit tests for tree based indexes.
  */
 
-#include "magma_check.h"
+#include "core_check.h"
+#include "random_generator_check.h"
 
 bool_t check_indexes_tree_cursor_compare(uint64_t values[], inx_cursor_t *cursor) {
 
@@ -75,7 +76,7 @@ bool_t check_indexes_tree_cursor(char **errmsg) {
 	uint64_t values[TREE_CURSORS_CHECK];
 
 	for (uint64_t i = 0; i < TREE_CURSORS_CHECK; i++) {
-		values[i] = rand_get_uint64();
+		values[i] = rand_get_uint64_check();
 	}
 
 	// Insert random numbers into values array.
@@ -140,7 +141,7 @@ bool_t check_indexes_tree_simple(char **errmsg) {
 
 	for (uint64_t i = rnum = 0; status() && i < TREE_INSERTS_CHECK; i++) {
 
-		rnum += (rand_get_uint64() % 16536) + 1;
+		rnum += (rand_get_uint64_check() % 16536) + 1;
 		snprintf(snum, 1024, "%lu", rnum);
 
 		if (!(val = mm_alloc(sizeof(uint64_t)))) {
@@ -178,7 +179,7 @@ bool_t check_indexes_tree_simple(char **errmsg) {
 
 	for (uint64_t i = rnum = 0; status() && i < TREE_INSERTS_CHECK; i++) {
 
-		rnum += (rand_get_uint64() % 16536) + 1;
+		rnum += (rand_get_uint64_check() % 16536) + 1;
 		snprintf(snum, 1024, "%lu", rnum);
 
 		if (!(val = ns_dupe(snum))) {

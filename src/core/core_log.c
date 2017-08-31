@@ -10,7 +10,7 @@
 
 magma_core_logger_t magma_core_loging;
 
-void magma_core_set_logger(magma_core_logger_t *info)
+void magma_core_set_logger(const magma_core_logger_t * const info)
 {
 	if(!info)
 	{
